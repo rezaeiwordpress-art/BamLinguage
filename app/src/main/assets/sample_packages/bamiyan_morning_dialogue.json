@@ -1,0 +1,859 @@
+{
+  "schemaVersion": 1,
+  "id": "pkg_bamiyan_morning_a2",
+  "version": 2,
+  "type": "dialogue",
+  "title": "Morning in Bamiyan",
+  "titleFa": "صبح در بامیان",
+  "description": "A short everyday dialogue between two friends preparing for a peaceful morning walk near Band-e-Amir.",
+  "descriptionFa": "گفت‌وگویی کوتاه و روزمره میان دو دوست در آماده شدن برای پیاده‌روی صبحگاهی در نزدیکی بند امیر.",
+  "level": "A2",
+  "topic": "Travel & Nature",
+  "language": "en",
+  "translationLanguage": "fa",
+  "estimatedMinutes": 4,
+  "metadata": {
+    "author": "BamLinguage Editorial",
+    "createdAt": "2026-11-24",
+    "updatedAt": "2026-11-24",
+    "wordCount": 42,
+    "sentenceCount": 4,
+    "glossaryCount": 36,
+    "tags": ["bamiyan", "travel", "morning", "nature"]
+  },
+  "speakers": [
+    {
+      "id": "spk_ali",
+      "name": "Ali",
+      "nameFa": "علی",
+      "role": "Friend & Guide"
+    },
+    {
+      "id": "spk_sara",
+      "name": "Sara",
+      "nameFa": "سارا",
+      "role": "Traveler"
+    }
+  ],
+  "sentences": [
+    {
+      "id": 1,
+      "orderIndex": 0,
+      "text": "Good morning, Sara. Are you ready for our trip to Bamiyan?",
+      "translationFa": "صبح بخیر سارا. برای سفرمان به بامیان آماده‌ای؟",
+      "speakerId": "spk_ali",
+      "phoneticHint": "ɡʊd ˈmɔːrnɪŋ ˈsɑːrə. ɑːr juː ˈredi fɔːr ˈaʊər trɪp tuː bɑːmiˈjɑːn?",
+      "grammarNoteFa": "ساختار «ready for ...» برای بیان آمادگی درباره یک برنامه یا سفر به کار می‌رود."
+    },
+    {
+      "id": 2,
+      "orderIndex": 1,
+      "text": "Yes, I packed my warm jacket because the mountain air is crisp.",
+      "translationFa": "بله، ژاکت گرمم را جمع کردم چون هوای کوهستان خنک و باطراوت است.",
+      "speakerId": "spk_sara",
+      "phoneticHint": "jes, aɪ pækt maɪ wɔːrm ˈdʒækɪt bɪˈkɔːz ðə ˈmaʊntən er ɪz krɪsp.",
+      "grammarNoteFa": "حرف ربط «because» دلیل انجام کار در جمله قبلی را توضیح می‌دهد."
+    },
+    {
+      "id": 3,
+      "orderIndex": 2,
+      "text": "The blue lakes of Band-e-Amir look peaceful in the early light.",
+      "translationFa": "دریاچه‌های آبی بند امیر در نور اول صبح آرامش‌بخش به نظر می‌رسند.",
+      "speakerId": "spk_ali",
+      "phoneticHint": "ðə bluː leɪks əv bænd e æˈmɪr lʊk ˈpiːsfəl ɪn ðə ˈɜːrli laɪt.",
+      "grammarNoteFa": "فعل «look» اینجا فعل ربطی است و پس از آن صفت (peaceful) می‌آید."
+    },
+    {
+      "id": 4,
+      "orderIndex": 3,
+      "text": "Let us look after our words and set off together.",
+      "translationFa": "بیایید مراقب واژه‌هایمان باشیم و با هم حرکت کنیم.",
+      "speakerId": "spk_sara",
+      "phoneticHint": "let ʌs lʊk ˈæftər ˈaʊər wɜːrdz ænd set ɒf təˈɡeðər.",
+      "grammarNoteFa": "دو فعل عبارتی «look after» (مراقبت کردن) و «set off» (رهسپار شدن) در این جمله آمده‌اند."
+    }
+  ],
+  "glossary": [
+    {
+      "id": "gls-good",
+      "term": "Good",
+      "lemma": "good",
+      "forms": ["good", "better", "best"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "خوب، خوشایند",
+          "definitionEn": "Pleasant, positive, or of high quality.",
+          "examples": [{ "text": "Good morning!", "translationFa": "صبح بخیر!" }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɡʊd/", "us": "/ɡʊd/" },
+      "synonyms": ["fine", "pleasant"],
+      "antonyms": ["bad"],
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "Good", "start": 0, "end": 4 }]
+    },
+    {
+      "id": "gls-morning",
+      "term": "morning",
+      "lemma": "morning",
+      "forms": ["morning", "mornings"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "صبح، بامداد",
+          "definitionEn": "The early part of the day until noon.",
+          "examples": [{ "text": "We walk in the morning.", "translationFa": "ما صبح‌ها پیاده‌روی می‌کنیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈmɔːnɪŋ/", "us": "/ˈmɔːrnɪŋ/" },
+      "synonyms": ["dawn"],
+      "antonyms": ["evening", "night"],
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "morning", "start": 5, "end": 12 }]
+    },
+    {
+      "id": "gls-sara",
+      "term": "Sara",
+      "lemma": "sara",
+      "forms": ["sara"],
+      "pos": "proper noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "سارا (نام خاص)",
+          "definitionEn": "A personal given name.",
+          "examples": [{ "text": "Sara loves nature.", "translationFa": "سارا طبیعت را دوست دارد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈsɑːrə/", "us": "/ˈsɛrə/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "Sara", "start": 14, "end": 18 }]
+    },
+    {
+      "id": "gls-be-are",
+      "term": "Are",
+      "lemma": "be",
+      "forms": ["be", "am", "is", "are", "was", "were", "been"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بودن، هستید / هستی",
+          "definitionEn": "To exist or be in a particular state.",
+          "examples": [{ "text": "Are you ready?", "translationFa": "آیا آماده‌ای؟" }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɑː(r)/", "us": "/ɑːr/" },
+      "sentenceIds": [1, 2],
+      "occurrences": [
+        { "sentenceId": 1, "surface": "Are", "start": 20, "end": 23 },
+        { "sentenceId": 2, "surface": "is", "start": 54, "end": 56 }
+      ]
+    },
+    {
+      "id": "gls-you",
+      "term": "you",
+      "lemma": "you",
+      "forms": ["you", "your"],
+      "pos": "pronoun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "تو، شما",
+          "definitionEn": "Used to refer to the person being spoken to.",
+          "examples": [{ "text": "Are you coming?", "translationFa": "آیا می‌آیی؟" }]
+        }
+      ],
+      "pronunciation": { "uk": "/juː/", "us": "/juː/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "you", "start": 24, "end": 27 }]
+    },
+    {
+      "id": "gls-ready-for",
+      "term": "ready for",
+      "lemma": "ready for",
+      "forms": ["ready for"],
+      "pos": "phrase",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آماده برای چیزی",
+          "definitionEn": "Prepared and willing to begin something.",
+          "examples": [{ "text": "We are ready for the journey.", "translationFa": "برای سفر آماده هستیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈredi fɔː/", "us": "/ˈredi fɔːr/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "ready for", "start": 28, "end": 37 }]
+    },
+    {
+      "id": "gls-ready",
+      "term": "ready",
+      "lemma": "ready",
+      "forms": ["ready"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آماده، مهیا",
+          "definitionEn": "Prepared for an activity or situation.",
+          "examples": [{ "text": "We are ready to leave.", "translationFa": "برای حرکت آماده‌ایم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈredi/", "us": "/ˈredi/" },
+      "synonyms": ["prepared"],
+      "antonyms": ["unprepared"],
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "ready", "start": 28, "end": 33 }]
+    },
+    {
+      "id": "gls-our",
+      "term": "our",
+      "lemma": "our",
+      "forms": ["our", "we", "us"],
+      "pos": "determiner",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "مالِ ما، ـِمان",
+          "definitionEn": "Belonging to us.",
+          "examples": [{ "text": "Our trip begins today.", "translationFa": "سفر ما امروز آغاز می‌شود." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈaʊə(r)/", "us": "/ˈaʊər/" },
+      "sentenceIds": [1, 4],
+      "occurrences": [
+        { "sentenceId": 1, "surface": "our", "start": 38, "end": 41 },
+        { "sentenceId": 4, "surface": "our", "start": 18, "end": 21 }
+      ]
+    },
+    {
+      "id": "gls-trip",
+      "term": "trip",
+      "lemma": "trip",
+      "forms": ["trip", "trips"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "سفر کوتاه، گردش",
+          "definitionEn": "A journey to a place and back again.",
+          "examples": [{ "text": "Our trip to Bamiyan was great.", "translationFa": "سفرمان به بامیان عالی بود." }]
+        },
+        {
+          "id": "sense-2",
+          "meaningFa": "سکندری خوردن (فعل)",
+          "definitionEn": "To catch your foot on something and nearly fall.",
+          "examples": [{ "text": "Careful not to trip on the stone.", "translationFa": "مراقب باش روی سنگ سکندری نخوری." }]
+        }
+      ],
+      "pronunciation": { "uk": "/trɪp/", "us": "/trɪp/" },
+      "synonyms": ["journey", "excursion"],
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "trip", "start": 42, "end": 46 }]
+    },
+    {
+      "id": "gls-to",
+      "term": "to",
+      "lemma": "to",
+      "forms": ["to"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "به، به سوی",
+          "definitionEn": "In the direction of a place.",
+          "examples": [{ "text": "We traveled to Bamiyan.", "translationFa": "به بامیان سفر کردیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/tuː/", "us": "/tuː/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "to", "start": 47, "end": 49 }]
+    },
+    {
+      "id": "gls-bamiyan",
+      "term": "Bamiyan",
+      "lemma": "bamiyan",
+      "forms": ["bamiyan"],
+      "pos": "proper noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بامیان (نام شهر و ولایت تاریخی)",
+          "definitionEn": "A historic highland valley and province famous for Band-e-Amir lakes.",
+          "examples": [{ "text": "Bamiyan has deep blue lakes.", "translationFa": "بامیان دریاچه‌های آبی عمیق دارد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/bɑːmiˈjɑːn/", "us": "/bɑːmiˈjɑːn/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "Bamiyan", "start": 50, "end": 57 }]
+    },
+    {
+      "id": "gls-pack",
+      "term": "packed",
+      "lemma": "pack",
+      "forms": ["pack", "packs", "packing", "packed"],
+      "pos": "verb",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "وسایل را جمع کردن، چمدان بستن",
+          "definitionEn": "To put clothes or items into a bag for traveling.",
+          "examples": [{ "text": "I packed my warm jacket.", "translationFa": "ژاکت گرمم را جمع کردم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/pækt/", "us": "/pækt/" },
+      "antonyms": ["unpack"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "packed", "start": 7, "end": 13 }]
+    },
+    {
+      "id": "gls-warm",
+      "term": "warm",
+      "lemma": "warm",
+      "forms": ["warm", "warmer", "warmest"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "گرم",
+          "definitionEn": "Having a pleasant, comfortable heat or keeping body heat.",
+          "examples": [{ "text": "Wear a warm jacket.", "translationFa": "یک ژاکت گرم بپوش." }]
+        }
+      ],
+      "pronunciation": { "uk": "/wɔːm/", "us": "/wɔːrm/" },
+      "antonyms": ["cold"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "warm", "start": 17, "end": 21 }]
+    },
+    {
+      "id": "gls-jacket",
+      "term": "jacket",
+      "lemma": "jacket",
+      "forms": ["jacket", "jackets"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "ژاکت، کاپشن کوتاه",
+          "definitionEn": "A short coat worn on the upper body.",
+          "examples": [{ "text": "My jacket is in my bag.", "translationFa": "ژاکتم داخل کیف است." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈdʒækɪt/", "us": "/ˈdʒækɪt/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "jacket", "start": 22, "end": 28 }]
+    },
+    {
+      "id": "gls-because",
+      "term": "because",
+      "lemma": "because",
+      "forms": ["because"],
+      "pos": "conjunction",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "زیرا، به دلیل اینکه",
+          "definitionEn": "For the reason that.",
+          "examples": [{ "text": "I stayed inside because it rained.", "translationFa": "داخل ماندم چون باران بارید." }]
+        }
+      ],
+      "pronunciation": { "uk": "/bɪˈkɒz/", "us": "/bɪˈkɔːz/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "because", "start": 29, "end": 36 }]
+    },
+    {
+      "id": "gls-the",
+      "term": "the",
+      "lemma": "the",
+      "forms": ["the"],
+      "pos": "article",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "حرف تعریف معین (آن)",
+          "definitionEn": "Used before a specific noun already known or clear from context.",
+          "examples": [{ "text": "The mountain air is fresh.", "translationFa": "هوای کوهستان تازه است." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ðə/", "us": "/ðə/" },
+      "sentenceIds": [2, 3],
+      "occurrences": [
+        { "sentenceId": 2, "surface": "the", "start": 37, "end": 40 },
+        { "sentenceId": 3, "surface": "The", "start": 0, "end": 3 },
+        { "sentenceId": 3, "surface": "the", "start": 47, "end": 50 }
+      ]
+    },
+    {
+      "id": "gls-mountain",
+      "term": "mountain",
+      "lemma": "mountain",
+      "forms": ["mountain", "mountains"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "کوه، کوهستان",
+          "definitionEn": "A very high natural elevation of the earth's surface.",
+          "examples": [{ "text": "The mountain peaks had snow.", "translationFa": "قله‌های کوه برف داشتند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈmaʊntɪn/", "us": "/ˈmaʊntən/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "mountain", "start": 41, "end": 49 }]
+    },
+    {
+      "id": "gls-air",
+      "term": "air",
+      "lemma": "air",
+      "forms": ["air"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "هوا",
+          "definitionEn": "The mixture of gases surrounding the earth that we breathe.",
+          "examples": [{ "text": "Fresh mountain air feels great.", "translationFa": "هوای تازه کوهستان حس خوبی دارد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/eə(r)/", "us": "/er/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "air", "start": 50, "end": 53 }]
+    },
+    {
+      "id": "gls-crisp",
+      "term": "crisp",
+      "lemma": "crisp",
+      "forms": ["crisp", "crisper"],
+      "pos": "adjective",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "خنک، تازه و باطراوت (هوا)",
+          "definitionEn": "Pleasantly cool, fresh, and invigorating.",
+          "examples": [{ "text": "Autumn mornings feel crisp.", "translationFa": "صبح‌های پاییز خنک و باطراوت است." }]
+        },
+        {
+          "id": "sense-2",
+          "meaningFa": "ترد و شکننده (خوراکی)",
+          "definitionEn": "Firm, dry, and breaking easily with a snap.",
+          "examples": [{ "text": "Crisp fresh apples.", "translationFa": "سیب‌های تازه و ترد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/krɪsp/", "us": "/krɪsp/" },
+      "synonyms": ["fresh", "brisk"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "crisp", "start": 57, "end": 62 }]
+    },
+    {
+      "id": "gls-lake",
+      "term": "lakes",
+      "lemma": "lake",
+      "forms": ["lake", "lakes"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "دریاچه",
+          "definitionEn": "A large body of water surrounded by land.",
+          "examples": [{ "text": "Band-e-Amir has six natural lakes.", "translationFa": "بند امیر شش دریاچه طبیعی دارد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/leɪks/", "us": "/leɪks/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "lakes", "start": 9, "end": 14 }]
+    },
+    {
+      "id": "gls-peaceful",
+      "term": "peaceful",
+      "lemma": "peaceful",
+      "forms": ["peaceful"],
+      "pos": "adjective",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آرام، آرامش‌بخش",
+          "definitionEn": "Quiet, calm, and free from disturbance.",
+          "examples": [{ "text": "The lake looks peaceful.", "translationFa": "دریاچه آرام به نظر می‌رسد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈpiːsfəl/", "us": "/ˈpiːsfəl/" },
+      "synonyms": ["calm", "serene"],
+      "antonyms": ["noisy"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "peaceful", "start": 35, "end": 43 }]
+    },
+    {
+      "id": "gls-light",
+      "term": "light",
+      "lemma": "light",
+      "forms": ["light", "lights", "lighter"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "نور، روشنایی",
+          "definitionEn": "Natural or artificial brightness that allows us to see.",
+          "examples": [{ "text": "In the early morning light.", "translationFa": "در نور اول صبح." }]
+        },
+        {
+          "id": "sense-2",
+          "meaningFa": "سبک (صفت)",
+          "definitionEn": "Not heavy in weight.",
+          "examples": [{ "text": "A light backpack.", "translationFa": "کوله‌پشتی سبک." }]
+        }
+      ],
+      "pronunciation": { "uk": "/laɪt/", "us": "/laɪt/" },
+      "synonyms": ["brightness"],
+      "antonyms": ["darkness"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "light", "start": 57, "end": 62 }]
+    },
+    {
+      "id": "gls-look-after",
+      "term": "look after",
+      "lemma": "look after",
+      "forms": ["look after", "looks after", "looked after", "looking after"],
+      "pos": "phrasal verb",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "مراقبت کردن از، نگهداری کردن",
+          "definitionEn": "To take care of or pay attention to someone or something.",
+          "examples": [{ "text": "Look after your notes.", "translationFa": "از یادداشت‌هایت مراقبت کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/lʊk ˈɑːftə/", "us": "/lʊk ˈæftər/" },
+      "synonyms": ["care for", "tend"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "look after", "start": 7, "end": 17 }]
+    },
+    {
+      "id": "gls-set-off",
+      "term": "set off",
+      "lemma": "set off",
+      "forms": ["set off", "sets off", "setting off"],
+      "pos": "phrasal verb",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "به راه افتادن، سفر را آغاز کردن",
+          "definitionEn": "To start a journey.",
+          "examples": [{ "text": "We set off at dawn.", "translationFa": "سپیده‌دم راه افتادیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/set ɒf/", "us": "/set ɔːf/" },
+      "synonyms": ["depart"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "set off", "start": 32, "end": 39 }]
+    },
+    {
+      "id": "gls-yes",
+      "term": "Yes",
+      "lemma": "yes",
+      "forms": ["yes"],
+      "pos": "adverb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بله، آری",
+          "definitionEn": "Used to give an affirmative response.",
+          "examples": [{ "text": "Yes, I am ready.", "translationFa": "بله، آماده‌ام." }]
+        }
+      ],
+      "pronunciation": { "uk": "/jes/", "us": "/jes/" },
+      "antonyms": ["no"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "Yes", "start": 0, "end": 3 }]
+    },
+    {
+      "id": "gls-i",
+      "term": "I",
+      "lemma": "i",
+      "forms": ["i"],
+      "pos": "pronoun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "من",
+          "definitionEn": "Used by a speaker to refer to themselves.",
+          "examples": [{ "text": "I packed my jacket.", "translationFa": "ژاکتم را جمع کردم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/aɪ/", "us": "/aɪ/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "I", "start": 5, "end": 6 }]
+    },
+    {
+      "id": "gls-my",
+      "term": "my",
+      "lemma": "my",
+      "forms": ["my"],
+      "pos": "determiner",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "مالِ من، ـَم",
+          "definitionEn": "Belonging to or associated with the speaker.",
+          "examples": [{ "text": "My warm jacket.", "translationFa": "ژاکت گرم من." }]
+        }
+      ],
+      "pronunciation": { "uk": "/maɪ/", "us": "/maɪ/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "my", "start": 14, "end": 16 }]
+    },
+    {
+      "id": "gls-blue",
+      "term": "blue",
+      "lemma": "blue",
+      "forms": ["blue", "bluer", "bluest"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آبی",
+          "definitionEn": "Of the color between green and violet, like a clear sky or deep lake.",
+          "examples": [{ "text": "The blue lakes of Band-e-Amir.", "translationFa": "دریاچه‌های آبی بند امیر." }]
+        }
+      ],
+      "pronunciation": { "uk": "/bluː/", "us": "/bluː/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "blue", "start": 4, "end": 8 }]
+    },
+    {
+      "id": "gls-of",
+      "term": "of",
+      "lemma": "of",
+      "forms": ["of"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "از،ِ (نشانه اضافه)",
+          "definitionEn": "Expressing the relationship between a part and a whole or location.",
+          "examples": [{ "text": "Lakes of Band-e-Amir.", "translationFa": "دریاچه‌های بند امیر." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɒv/", "us": "/ʌv/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "of", "start": 15, "end": 17 }]
+    },
+    {
+      "id": "gls-band-e-amir",
+      "term": "Band-e-Amir",
+      "lemma": "band-e-amir",
+      "forms": ["band-e-amir"],
+      "pos": "proper noun",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بند امیر (پارک ملی و دریاچه‌های فیروزه‌ای بامیان)",
+          "definitionEn": "A series of six natural deep-blue lakes in Bamiyan, Afghanistan.",
+          "examples": [{ "text": "Band-e-Amir is peaceful.", "translationFa": "بند امیر آرامش‌بخش است." }]
+        }
+      ],
+      "pronunciation": { "uk": "/bænd e æˈmɪr/", "us": "/bænd e æˈmɪr/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "Band-e-Amir", "start": 18, "end": 29 }]
+    },
+    {
+      "id": "gls-look",
+      "term": "look",
+      "lemma": "look",
+      "forms": ["look", "looks", "looked", "looking"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "به نظر رسیدن (فعل ربطی)",
+          "definitionEn": "To appear or seem a particular way.",
+          "examples": [{ "text": "The lakes look peaceful.", "translationFa": "دریاچه‌ها آرام به نظر می‌رسند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/lʊk/", "us": "/lʊk/" },
+      "synonyms": ["seem", "appear"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "look", "start": 30, "end": 34 }]
+    },
+    {
+      "id": "gls-in",
+      "term": "in",
+      "lemma": "in",
+      "forms": ["in"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "در، درون",
+          "definitionEn": "Inside or surrounded by a place, time, or condition.",
+          "examples": [{ "text": "In the early light.", "translationFa": "در نور اول صبح." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɪn/", "us": "/ɪn/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "in", "start": 44, "end": 46 }]
+    },
+    {
+      "id": "gls-early",
+      "term": "early",
+      "lemma": "early",
+      "forms": ["early", "earlier", "earliest"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "زودهنگام، آغازین",
+          "definitionEn": "Near the beginning of a period of time, such as morning.",
+          "examples": [{ "text": "Early morning air.", "translationFa": "هوای اول صبح." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈɜːli/", "us": "/ˈɜːrli/" },
+      "antonyms": ["late"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "early", "start": 51, "end": 56 }]
+    },
+    {
+      "id": "gls-let",
+      "term": "Let",
+      "lemma": "let",
+      "forms": ["let", "lets", "letting"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "اجازه دادن / بیایید (برای پیشنهاد)",
+          "definitionEn": "Used with 'us' to suggest an action together.",
+          "examples": [{ "text": "Let us start now.", "translationFa": "بیایید الان شروع کنیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/let/", "us": "/let/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "Let", "start": 0, "end": 3 }]
+    },
+    {
+      "id": "gls-words",
+      "term": "words",
+      "lemma": "word",
+      "forms": ["word", "words"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "واژه، کلمه",
+          "definitionEn": "A single meaningful element of speech or writing.",
+          "examples": [{ "text": "Review new words daily.", "translationFa": "واژه‌های جدید را روزانه مرور کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/wɜːdz/", "us": "/wɜːrdz/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "words", "start": 22, "end": 27 }]
+    },
+    {
+      "id": "gls-and",
+      "term": "and",
+      "lemma": "and",
+      "forms": ["and"],
+      "pos": "conjunction",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "و",
+          "definitionEn": "Used to connect words or clauses.",
+          "examples": [{ "text": "Ali and Sara.", "translationFa": "علی و سارا." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ænd/", "us": "/ænd/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "and", "start": 28, "end": 31 }]
+    },
+    {
+      "id": "gls-together",
+      "term": "together",
+      "lemma": "together",
+      "forms": ["together"],
+      "pos": "adverb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "با هم، در کنار هم",
+          "definitionEn": "With or in proximity to another person or people.",
+          "examples": [{ "text": "Let us learn together.", "translationFa": "بیایید با هم یاد بگیریم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/təˈɡeðə(r)/", "us": "/təˈɡeðər/" },
+      "antonyms": ["apart"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "together", "start": 40, "end": 48 }]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_1",
+      "orderIndex": 0,
+      "promptEn": "Why did Sara pack a warm jacket?",
+      "promptFa": "چرا سارا یک ژاکت گرم همراه خود برداشت؟",
+      "options": [
+        "Because it is raining heavily",
+        "Because the mountain air is crisp",
+        "Because she lost her coat",
+        "Because they are traveling at midnight"
+      ],
+      "correctOptionIndex": 1,
+      "explanationFa": "سارا در جمله دوم توضیح می‌دهد که هوای کوهستان خنک و باطراوت (crisp) است."
+    },
+    {
+      "id": "q_2",
+      "orderIndex": 1,
+      "promptEn": "How do the lakes of Band-e-Amir look in the early light?",
+      "promptFa": "دریاچه‌های بند امیر در نور اول صبح چگونه به نظر می‌رسند؟",
+      "options": [
+        "Crowded and noisy",
+        "Dark and stormy",
+        "Peaceful",
+        "Frozen"
+      ],
+      "correctOptionIndex": 2,
+      "explanationFa": "علی می‌گوید دریاچه‌های آبی بند امیر در نور صبح آرامش‌بخش (peaceful) به نظر می‌رسند."
+    }
+  ]
+}

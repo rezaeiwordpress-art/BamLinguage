@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">BamLinguage</string>
+    <string name="brand_subtitle_fa">بام‌لینگویج • یادگیری آفلاین زبان انگلیسی</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">خانه</string>
+    <string name="nav_learn">یادگیری</string>
+    <string name="nav_practice">تمرین</string>
+    <string name="nav_progress">پیشرفت</string>
+    <string name="nav_profile">پروفایل</string>
+
+    <!-- Offline Badge -->
+    <string name="status_offline_ready">کاملاً آفلاین و آماده استفاده</string>
+
+    <!-- Home Screen -->
+    <string name="home_welcome_title">به بام‌لینگویج خوش آمدید</string>
+    <string name="home_welcome_subtitle">یادگیری پایدار زبان انگلیسی با متن، تلفظ بومی و مرور هوشمند، بدون نیاز به اینترنت.</string>
+    <string name="home_stats_title">وضعیت هسته آفلاین</string>
+    <string name="home_packages_count">بسته‌های محتوا</string>
+    <string name="home_glossary_count">واژه‌های واژه‌نامه</string>
+    <string name="home_srs_due_count">کارت‌های مرور</string>
+    <string name="home_featured_title">بسته نمونه نصب‌شده</string>
+
+    <!-- Learn Screen -->
+    <string name="learn_title">کتابخانه محتوا</string>
+    <string name="learn_subtitle">داستان‌ها و گفت‌وگوهای آفلاین با خواننده تعاملی و واژه‌نامه کامل</string>
+    <string name="learn_filter_all">همه سطوح</string>
+    <string name="learn_import_json_button">وارد کردن و اعتبارسنجی JSON</string>
+    <string name="learn_load_sample_button">بازنشانی بسته‌های نمونه</string>
+    <string name="learn_empty_title">هیچ بسته‌ای یافت نشد</string>
+    <string name="learn_empty_subtitle">برای شروع، بسته‌های نمونه آفلاین را بارگذاری یا یک فایل JSON معتبر وارد کنید.</string>
+
+    <!-- Practice Screen -->
+    <string name="practice_title">مرور هوشمند و تلفظ</string>
+    <string name="practice_subtitle">جلسه مرور SM-2 و کنترل تلفظ آفلاین اندروید</string>
+    <string name="practice_tts_card_title">آزمایشگر موتور تلفظ (TTS)</string>
+    <string name="practice_tts_test_button">پخش تلفظ نمونه انگلیسی</string>
+    <string name="practice_tts_stop_button">توقف پخش</string>
+    <string name="practice_srs_card_title">سیستم مرور فاصله‌دار (SRS)</string>
+
+    <!-- Progress Screen -->
+    <string name="progress_title">گزارش پیشرفت</string>
+    <string name="progress_subtitle">آمار واقعی ذخیره شده در پایگاه داده Room</string>
+    <string name="progress_db_summary">خلاصه جدول‌های محتوا و یادگیری</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_title">تنظیمات و پروفایل</string>
+    <string name="profile_subtitle">تنظیمات محلی بدون نیاز به حساب کاربری</string>
+    <string name="profile_theme_title">ظاهر برنامه</string>
+    <string name="profile_theme_system">هماهنگ با سیستم</string>
+    <string name="profile_theme_light">پوسته روشن</string>
+    <string name="profile_theme_dark">پوسته تیره</string>
+    <string name="profile_tts_speed_title">سرعت تلفظ انگلیسی</string>
+    <string name="profile_daily_goal_title">هدف مرور روزانه</string>
+    <string name="profile_diagnostics_title">مشخصات فنی آفلاین</string>
+    <string name="home_daily_goal_title">هدف مرور و پیوستگی امروز</string>
+    <string name="home_quick_actions_title">دسترسی سریع</string>
+    <string name="home_recent_content_title">داستان‌ها و گفت‌وگوهای اخیر</string>
+    <string name="home_user_vocab_title">واژه‌نامه شخصی</string>
+    <string name="progress_activity_7d_title">فعالیت مرور ۷ روز گذشته</string>
+    <string name="profile_reader_prefs_title">تنظیمات خواننده و مرور</string>
+    <string name="profile_data_management_title">مدیریت داده‌ها و محتوا</string>
+    <string name="profile_ai_optional_title">هوش مصنوعی اختیاری (جداگانه و خاموش)</string>
+</resources>

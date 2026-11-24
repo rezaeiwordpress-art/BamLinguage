@@ -1,0 +1,6 @@
+{
+  "name": "BamLinguage",
+  "description": "Offline-first English learning application with Persian RTL interface, Room database foundation, JSON content package importer, SRS scheduler, and Android TextToSpeech.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

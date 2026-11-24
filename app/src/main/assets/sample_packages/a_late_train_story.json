@@ -1,0 +1,759 @@
+{
+  "schemaVersion": 1,
+  "id": "story-b1-0001",
+  "version": 1,
+  "type": "story",
+  "title": "A Late Train",
+  "titleFa": "قطار دیرهنگام",
+  "description": "A B1 story about missing a train, not giving up, and finding a better route.",
+  "descriptionFa": "داستانی در سطح B1 درباره از دست دادن قطار، تسلیم نشدن و پیدا کردن مسیری بهتر.",
+  "level": "B1",
+  "topic": "travel",
+  "language": "en",
+  "translationLanguage": "fa",
+  "estimatedMinutes": 5,
+  "metadata": {
+    "author": "BamLinguage",
+    "createdAt": "2026-11-24",
+    "updatedAt": "2026-11-24",
+    "wordCount": 42,
+    "sentenceCount": 4,
+    "glossaryCount": 32,
+    "tags": ["travel", "phrasal-verbs", "story"]
+  },
+  "speakers": [],
+  "sentences": [
+    {
+      "id": 1,
+      "orderIndex": 0,
+      "text": "Sara missed her train again.",
+      "translationFa": "سارا دوباره از قطارش جا ماند.",
+      "speakerId": null
+    },
+    {
+      "id": 2,
+      "orderIndex": 1,
+      "text": "She was running late and ran out of time at the station.",
+      "translationFa": "او دیرش شده بود و در ایستگاه وقت کم آورد.",
+      "speakerId": null
+    },
+    {
+      "id": 3,
+      "orderIndex": 2,
+      "text": "She did not give up and went to ask for a better route.",
+      "translationFa": "او ناامید نشد و رفت تا مسیر بهتری بپرسد.",
+      "speakerId": null
+    },
+    {
+      "id": 4,
+      "orderIndex": 3,
+      "text": "Next week, she will take part in a travel workshop to feel better prepared.",
+      "translationFa": "هفته آینده او در یک کارگاه سفر شرکت خواهد کرد تا آمادگی بیشتری احساس کند.",
+      "speakerId": null
+    }
+  ],
+  "glossary": [
+    {
+      "id": "sara-noun-001",
+      "term": "Sara",
+      "lemma": "sara",
+      "forms": ["sara"],
+      "pos": "proper noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "سارا (نام خاص)",
+          "definitionEn": "A personal given name.",
+          "examples": [{ "text": "Sara missed her train.", "translationFa": "سارا از قطارش جا ماند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈsɑːrə/", "us": "/ˈsɛrə/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "Sara", "start": 0, "end": 4 }]
+    },
+    {
+      "id": "missed-verb-001",
+      "term": "missed",
+      "lemma": "miss",
+      "forms": ["miss", "misses", "missing", "missed"],
+      "pos": "verb",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "از دست دادن، جا ماندن از (قطار یا فرصت)",
+          "definitionEn": "To fail to catch or reach something on time.",
+          "examples": [{ "text": "She missed her train.", "translationFa": "او از قطارش جا ماند." }]
+        },
+        {
+          "id": "sense-2",
+          "meaningFa": "دلتنگ شدن برای کسی یا جایی",
+          "definitionEn": "To feel sad because someone or something is not present.",
+          "examples": [{ "text": "I miss my family.", "translationFa": "دلم برای خانواده‌ام تنگ شده است." }]
+        }
+      ],
+      "pronunciation": { "uk": "/mɪst/", "us": "/mɪst/" },
+      "synonyms": ["fail to catch"],
+      "antonyms": ["catch"],
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "missed", "start": 5, "end": 11 }]
+    },
+    {
+      "id": "her-det-001",
+      "term": "her",
+      "lemma": "her",
+      "forms": ["her"],
+      "pos": "determiner",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "مال او (مؤنث)، ـَش",
+          "definitionEn": "Belonging to a female person previously mentioned.",
+          "examples": [{ "text": "She took her ticket.", "translationFa": "او بلیتش را برداشت." }]
+        }
+      ],
+      "pronunciation": { "uk": "/hɜː(r)/", "us": "/hɜːr/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "her", "start": 12, "end": 15 }]
+    },
+    {
+      "id": "she-pron-001",
+      "term": "she",
+      "lemma": "she",
+      "forms": ["she"],
+      "pos": "pronoun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "او (مؤنث)",
+          "definitionEn": "Used as the subject to refer to a female person.",
+          "examples": [{ "text": "She will travel next week.", "translationFa": "او هفته آینده سفر خواهد کرد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ʃiː/", "us": "/ʃiː/" },
+      "sentenceIds": [2, 3, 4],
+      "occurrences": [
+        { "sentenceId": 2, "surface": "She", "start": 0, "end": 3 },
+        { "sentenceId": 3, "surface": "She", "start": 0, "end": 3 },
+        { "sentenceId": 4, "surface": "she", "start": 11, "end": 14 }
+      ]
+    },
+    {
+      "id": "train-noun-001",
+      "term": "train",
+      "lemma": "train",
+      "forms": ["train", "trains"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "قطار",
+          "definitionEn": "A connected line of railway carriages pulled by an engine.",
+          "examples": [{ "text": "The train arrives at seven.", "translationFa": "قطار ساعت هفت می‌رسد." }]
+        },
+        {
+          "id": "sense-2",
+          "meaningFa": "آموزش دادن، تمرین دادن (فعل)",
+          "definitionEn": "To teach a skill through regular practice.",
+          "examples": [{ "text": "They train every morning.", "translationFa": "آن‌ها هر صبح تمرین می‌کنند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/treɪn/", "us": "/treɪn/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "train", "start": 16, "end": 21 }]
+    },
+    {
+      "id": "again-adv-001",
+      "term": "again",
+      "lemma": "again",
+      "forms": ["again"],
+      "pos": "adverb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "دوباره، مجدداً",
+          "definitionEn": "One more time; another time.",
+          "examples": [{ "text": "Try again tomorrow.", "translationFa": "فردا دوباره تلاش کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/əˈɡen/", "us": "/əˈɡen/" },
+      "sentenceIds": [1],
+      "occurrences": [{ "sentenceId": 1, "surface": "again", "start": 22, "end": 27 }]
+    },
+    {
+      "id": "be-verb-001",
+      "term": "was",
+      "lemma": "be",
+      "forms": ["be", "am", "is", "are", "was", "were", "been"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بود (فعل کمکی یا ربطی گذشته)",
+          "definitionEn": "Past singular form of 'be', used to form continuous tenses or states.",
+          "examples": [{ "text": "She was running late.", "translationFa": "او دیرش شده بود." }]
+        }
+      ],
+      "pronunciation": { "uk": "/wɒz/", "us": "/wʌz/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "was", "start": 4, "end": 7 }]
+    },
+    {
+      "id": "run-verb-001",
+      "term": "running",
+      "lemma": "run",
+      "forms": ["run", "runs", "ran", "running"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "دویدن / در حالت عجله یا تاخیر بودن",
+          "definitionEn": "To move quickly on foot, or in 'running late', to be behind schedule.",
+          "examples": [{ "text": "She was running late.", "translationFa": "او دیرش شده بود." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈrʌnɪŋ/", "us": "/ˈrʌnɪŋ/" },
+      "synonyms": ["hurry", "sprint"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "running", "start": 8, "end": 15 }]
+    },
+    {
+      "id": "late-adv-001",
+      "term": "late",
+      "lemma": "late",
+      "forms": ["late", "later", "latest"],
+      "pos": "adverb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "دیر، با تاخیر",
+          "definitionEn": "After the expected, proper, or usual time.",
+          "examples": [{ "text": "Sorry I am late.", "translationFa": "ببخشید که دیر کردم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/leɪt/", "us": "/leɪt/" },
+      "antonyms": ["early"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "late", "start": 16, "end": 20 }]
+    },
+    {
+      "id": "and-conj-001",
+      "term": "and",
+      "lemma": "and",
+      "forms": ["and"],
+      "pos": "conjunction",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "و",
+          "definitionEn": "Used to connect words, phrases, or clauses.",
+          "examples": [{ "text": "Sara and Ali arrived.", "translationFa": "سارا و علی رسیدند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ænd/", "us": "/ænd/" },
+      "sentenceIds": [2, 3],
+      "occurrences": [
+        { "sentenceId": 2, "surface": "and", "start": 21, "end": 24 },
+        { "sentenceId": 3, "surface": "and", "start": 20, "end": 23 }
+      ]
+    },
+    {
+      "id": "run-out-of-001",
+      "term": "run out of",
+      "lemma": "run out of",
+      "forms": ["run out of", "runs out of", "ran out of", "running out of"],
+      "pos": "phrasal verb",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "تمام کردن، کم آوردن (وقت یا منبع)",
+          "definitionEn": "To use up the whole supply of something so none remains.",
+          "examples": [{ "text": "We ran out of time.", "translationFa": "وقت کم آوردیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/rʌn aʊt əv/", "us": "/rʌn aʊt əv/" },
+      "synonyms": ["exhaust"],
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "ran out of", "start": 25, "end": 35 }]
+    },
+    {
+      "id": "time-noun-001",
+      "term": "time",
+      "lemma": "time",
+      "forms": ["time", "times"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "وقت، زمان",
+          "definitionEn": "Minutes, hours, or an available period for doing something.",
+          "examples": [{ "text": "We still have time.", "translationFa": "ما هنوز وقت داریم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/taɪm/", "us": "/taɪm/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "time", "start": 36, "end": 40 }]
+    },
+    {
+      "id": "at-prep-001",
+      "term": "at",
+      "lemma": "at",
+      "forms": ["at"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "در (مکان یا زمان مشخص)",
+          "definitionEn": "Used to indicate a location or point in time.",
+          "examples": [{ "text": "Wait at the station.", "translationFa": "در ایستگاه منتظر بمان." }]
+        }
+      ],
+      "pronunciation": { "uk": "/æt/", "us": "/æt/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "at", "start": 41, "end": 43 }]
+    },
+    {
+      "id": "the-art-001",
+      "term": "the",
+      "lemma": "the",
+      "forms": ["the"],
+      "pos": "article",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "حرف تعریف معین (آن)",
+          "definitionEn": "Used before a specific noun already known from context.",
+          "examples": [{ "text": "Meet at the station.", "translationFa": "در ایستگاه ملاقات کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ðə/", "us": "/ðə/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "the", "start": 44, "end": 47 }]
+    },
+    {
+      "id": "station-noun-001",
+      "term": "station",
+      "lemma": "station",
+      "forms": ["station", "stations"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "ایستگاه (قطار یا اتوبوس)",
+          "definitionEn": "A building and platforms where trains or buses stop.",
+          "examples": [{ "text": "Meet me at the station.", "translationFa": "در ایستگاه با من ملاقات کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈsteɪʃən/", "us": "/ˈsteɪʃən/" },
+      "sentenceIds": [2],
+      "occurrences": [{ "sentenceId": 2, "surface": "station", "start": 48, "end": 55 }]
+    },
+    {
+      "id": "do-verb-001",
+      "term": "did",
+      "lemma": "do",
+      "forms": ["do", "does", "did", "done", "doing"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "فعل کمکی زمان گذشته / انجام دادن",
+          "definitionEn": "Past tense of 'do', used to form negatives and questions.",
+          "examples": [{ "text": "She did not give up.", "translationFa": "او تسلیم نشد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/dɪd/", "us": "/dɪd/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "did", "start": 4, "end": 7 }]
+    },
+    {
+      "id": "not-adv-001",
+      "term": "not",
+      "lemma": "not",
+      "forms": ["not"],
+      "pos": "adverb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "نه، منفی‌ساز فعل",
+          "definitionEn": "Used to make a verb, sentence, or phrase negative.",
+          "examples": [{ "text": "Do not worry.", "translationFa": "نگران نباش." }]
+        }
+      ],
+      "pronunciation": { "uk": "/nɒt/", "us": "/nɑːt/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "not", "start": 8, "end": 11 }]
+    },
+    {
+      "id": "give-up-001",
+      "term": "give up",
+      "lemma": "give up",
+      "forms": ["give up", "gives up", "gave up", "given up", "giving up"],
+      "pos": "phrasal verb",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "دست کشیدن از تلاش، تسلیم شدن",
+          "definitionEn": "To stop trying to do something before finishing.",
+          "examples": [{ "text": "Never give up!", "translationFa": "هرگز تسلیم نشو!" }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɡɪv ʌp/", "us": "/ɡɪv ʌp/" },
+      "synonyms": ["quit"],
+      "antonyms": ["persist"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "give up", "start": 12, "end": 19 }]
+    },
+    {
+      "id": "go-verb-001",
+      "term": "went",
+      "lemma": "go",
+      "forms": ["go", "goes", "went", "gone", "going"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "رفتن",
+          "definitionEn": "To move or travel from one place to another.",
+          "examples": [{ "text": "She went to the desk.", "translationFa": "او به سمت باجه رفت." }]
+        }
+      ],
+      "pronunciation": { "uk": "/went/", "us": "/went/" },
+      "antonyms": ["stay", "come"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "went", "start": 24, "end": 28 }]
+    },
+    {
+      "id": "to-prep-001",
+      "term": "to",
+      "lemma": "to",
+      "forms": ["to"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "برای، تا (نشانه مصدر)",
+          "definitionEn": "Used before a verb infinitive to express purpose.",
+          "examples": [{ "text": "She went to ask.", "translationFa": "او رفت تا بپرسد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/tuː/", "us": "/tuː/" },
+      "sentenceIds": [3, 4],
+      "occurrences": [
+        { "sentenceId": 3, "surface": "to", "start": 29, "end": 31 },
+        { "sentenceId": 4, "surface": "to", "start": 51, "end": 53 }
+      ]
+    },
+    {
+      "id": "ask-verb-001",
+      "term": "ask",
+      "lemma": "ask",
+      "forms": ["ask", "asks", "asked", "asking"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "پرسیدن، درخواست کردن",
+          "definitionEn": "To request information or help from someone.",
+          "examples": [{ "text": "Ask for directions.", "translationFa": "مسیر را بپرس." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ɑːsk/", "us": "/æsk/" },
+      "antonyms": ["answer"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "ask", "start": 32, "end": 35 }]
+    },
+    {
+      "id": "for-prep-001",
+      "term": "for",
+      "lemma": "for",
+      "forms": ["for"],
+      "pos": "preposition",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "برای، در جست‌وجوی",
+          "definitionEn": "Used to show purpose or what is requested.",
+          "examples": [{ "text": "Ask for a route.", "translationFa": "یک مسیر بپرس." }]
+        }
+      ],
+      "pronunciation": { "uk": "/fɔː(r)/", "us": "/fɔːr/" },
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "for", "start": 36, "end": 39 }]
+    },
+    {
+      "id": "a-art-001",
+      "term": "a",
+      "lemma": "a",
+      "forms": ["a", "an"],
+      "pos": "article",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "یک (حرف تعریف نکره)",
+          "definitionEn": "Used before a singular countable noun when mentioned generally.",
+          "examples": [{ "text": "A better route.", "translationFa": "یک مسیر بهتر." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ə/", "us": "/ə/" },
+      "sentenceIds": [3, 4],
+      "occurrences": [
+        { "sentenceId": 3, "surface": "a", "start": 40, "end": 41 },
+        { "sentenceId": 4, "surface": "a", "start": 33, "end": 34 }
+      ]
+    },
+    {
+      "id": "better-adj-001",
+      "term": "better",
+      "lemma": "good",
+      "forms": ["good", "better", "best"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "بهتر (صفت تفضیلی)",
+          "definitionEn": "Of higher quality or more suitable than another.",
+          "examples": [{ "text": "We found a better route.", "translationFa": "مسیر بهتری پیدا کردیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈbetə(r)/", "us": "/ˈbetər/" },
+      "antonyms": ["worse"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "better", "start": 42, "end": 48 }]
+    },
+    {
+      "id": "better-adv-001",
+      "term": "better",
+      "lemma": "well",
+      "forms": ["well", "better", "best"],
+      "pos": "adverb",
+      "cefr": "A2",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "به شکل بهتر، بیشتر (قید تفضیلی)",
+          "definitionEn": "To a higher degree or in a more effective way.",
+          "examples": [{ "text": "She felt better prepared.", "translationFa": "احساس آمادگی بیشتری داشت." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈbetə(r)/", "us": "/ˈbetər/" },
+      "antonyms": ["worse"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "better", "start": 59, "end": 65 }]
+    },
+    {
+      "id": "route-noun-001",
+      "term": "route",
+      "lemma": "route",
+      "forms": ["route", "routes"],
+      "pos": "noun",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "مسیر، راه",
+          "definitionEn": "A way or course taken from a starting point to a destination.",
+          "examples": [{ "text": "This route avoids traffic.", "translationFa": "این مسیر ترافیک را دور می‌زند." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ruːt/", "us": "/raʊt/" },
+      "synonyms": ["path", "way"],
+      "sentenceIds": [3],
+      "occurrences": [{ "sentenceId": 3, "surface": "route", "start": 49, "end": 54 }]
+    },
+    {
+      "id": "next-adj-001",
+      "term": "Next",
+      "lemma": "next",
+      "forms": ["next"],
+      "pos": "adjective",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آینده، بعدی",
+          "definitionEn": "Coming immediately after the present time.",
+          "examples": [{ "text": "Next week we travel.", "translationFa": "هفته آینده سفر می‌کنیم." }]
+        }
+      ],
+      "pronunciation": { "uk": "/nekst/", "us": "/nekst/" },
+      "antonyms": ["last", "previous"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "Next", "start": 0, "end": 4 }]
+    },
+    {
+      "id": "week-noun-001",
+      "term": "week",
+      "lemma": "week",
+      "forms": ["week", "weeks"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "هفته",
+          "definitionEn": "A period of seven consecutive days.",
+          "examples": [{ "text": "See you next week.", "translationFa": "هفته آینده می‌بینمت." }]
+        }
+      ],
+      "pronunciation": { "uk": "/wiːk/", "us": "/wiːk/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "week", "start": 5, "end": 9 }]
+    },
+    {
+      "id": "will-verb-001",
+      "term": "will",
+      "lemma": "will",
+      "forms": ["will"],
+      "pos": "modal verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "خواهد (نشانه زمان آینده)",
+          "definitionEn": "Used with a base verb to express the future.",
+          "examples": [{ "text": "She will attend.", "translationFa": "او شرکت خواهد کرد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/wɪl/", "us": "/wɪl/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "will", "start": 15, "end": 19 }]
+    },
+    {
+      "id": "take-part-in-001",
+      "term": "take part in",
+      "lemma": "take part in",
+      "forms": ["take part in", "takes part in", "took part in", "taking part in"],
+      "pos": "phrasal verb",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "شرکت کردن در (رویداد یا فعالیت)",
+          "definitionEn": "To participate or join with others in an activity.",
+          "examples": [{ "text": "Take part in the workshop.", "translationFa": "در کارگاه شرکت کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/teɪk pɑːt ɪn/", "us": "/teɪk pɑːrt ɪn/" },
+      "synonyms": ["participate in", "join"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "take part in", "start": 20, "end": 32 }]
+    },
+    {
+      "id": "travel-noun-001",
+      "term": "travel",
+      "lemma": "travel",
+      "forms": ["travel", "travels", "traveled", "traveling"],
+      "pos": "noun",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "سفر، مسافرت",
+          "definitionEn": "Going from one place to another, especially over a long distance.",
+          "examples": [{ "text": "Travel builds experience.", "translationFa": "سفر تجربه می‌سازد." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈtrævəl/", "us": "/ˈtrævəl/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "travel", "start": 35, "end": 41 }]
+    },
+    {
+      "id": "workshop-noun-001",
+      "term": "workshop",
+      "lemma": "workshop",
+      "forms": ["workshop", "workshops"],
+      "pos": "noun",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "کارگاه آموزشی",
+          "definitionEn": "A practical session where a group learns and practices skills.",
+          "examples": [{ "text": "A weekend travel workshop.", "translationFa": "کارگاه سفر آخر هفته." }]
+        }
+      ],
+      "pronunciation": { "uk": "/ˈwɜːkʃɒp/", "us": "/ˈwɜːrkʃɑːp/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "workshop", "start": 42, "end": 50 }]
+    },
+    {
+      "id": "feel-verb-001",
+      "term": "feel",
+      "lemma": "feel",
+      "forms": ["feel", "feels", "felt", "feeling"],
+      "pos": "verb",
+      "cefr": "A1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "احساس کردن",
+          "definitionEn": "To experience an emotion or physical sensation.",
+          "examples": [{ "text": "Feel prepared and calm.", "translationFa": "احساس آمادگی و آرامش کن." }]
+        }
+      ],
+      "pronunciation": { "uk": "/fiːl/", "us": "/fiːl/" },
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "feel", "start": 54, "end": 58 }]
+    },
+    {
+      "id": "prepared-adj-001",
+      "term": "prepared",
+      "lemma": "prepare",
+      "forms": ["prepare", "prepared", "prepares", "preparing"],
+      "pos": "adjective",
+      "cefr": "B1",
+      "senses": [
+        {
+          "id": "sense-1",
+          "meaningFa": "آماده، مهیا",
+          "definitionEn": "Ready and organized to deal with something.",
+          "examples": [{ "text": "She is well prepared.", "translationFa": "او کاملاً آماده است." }]
+        }
+      ],
+      "pronunciation": { "uk": "/prɪˈpeəd/", "us": "/prɪˈperd/" },
+      "synonyms": ["ready"],
+      "sentenceIds": [4],
+      "occurrences": [{ "sentenceId": 4, "surface": "prepared", "start": 66, "end": 74 }]
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "orderIndex": 0,
+      "promptEn": "What did Sara do after missing her train?",
+      "promptFa": "سارا پس از از دست دادن قطار چه کار کرد؟",
+      "options": [
+        "She returned home immediately",
+        "She did not give up and asked for a better route",
+        "She bought a new car",
+        "She canceled her workshop"
+      ],
+      "correctOptionIndex": 1,
+      "explanationFa": "در جمله سوم آمده است که سارا ناامید نشد (did not give up) و مسیر بهتری را جویا شد."
+    }
+  ]
+}
