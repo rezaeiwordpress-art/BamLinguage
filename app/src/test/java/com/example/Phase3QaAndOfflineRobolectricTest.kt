@@ -155,7 +155,11 @@ class Phase3QaAndOfflineRobolectricTest {
         // --- Session 1: Populate offline DB & DataStore ---
         val db1 =
           Room.databaseBuilder(context, BamLinguageDatabase::class.java, dbFile.absolutePath)
-            .addMigrations(BamLinguageDatabase.MIGRATION_1_2)
+            .addMigrations(
+              BamLinguageDatabase.MIGRATION_1_2,
+              BamLinguageDatabase.MIGRATION_2_3,
+              BamLinguageDatabase.MIGRATION_3_4,
+            )
             .allowMainThreadQueries()
             .build()
         val scope1 = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -224,7 +228,11 @@ class Phase3QaAndOfflineRobolectricTest {
         // --- Session 2: Fresh DB + DataStore instances (simulated cold process restart) ---
         val db2 =
           Room.databaseBuilder(context, BamLinguageDatabase::class.java, dbFile.absolutePath)
-            .addMigrations(BamLinguageDatabase.MIGRATION_1_2)
+            .addMigrations(
+              BamLinguageDatabase.MIGRATION_1_2,
+              BamLinguageDatabase.MIGRATION_2_3,
+              BamLinguageDatabase.MIGRATION_3_4,
+            )
             .allowMainThreadQueries()
             .build()
         val scope2 = CoroutineScope(SupervisorJob() + Dispatchers.IO)

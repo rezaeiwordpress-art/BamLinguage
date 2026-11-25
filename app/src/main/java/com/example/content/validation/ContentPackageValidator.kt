@@ -94,10 +94,11 @@ class ContentPackageValidator {
 
     val speakerIds = mutableSetOf<String>()
     dto.speakers.forEachIndexed { index, spk ->
-      if (spk.id.isBlank()) {
+      val cleanSpeakerId = spk.id.trim()
+      if (cleanSpeakerId.isBlank()) {
         errors += missingField("speakers[$index].id", "شناسه گوینده خالی است.")
-      } else if (!speakerIds.add(spk.id)) {
-        errors += duplicateId("speakers[$index].id", "شناسه گوینده تکراری است: ${spk.id}")
+      } else if (!speakerIds.add(cleanSpeakerId)) {
+        errors += duplicateId("speakers[$index].id", "شناسه گوینده تکراری است: $cleanSpeakerId")
       }
       if (spk.name.isBlank()) {
         errors += missingField("speakers[$index].name", "نام گوینده خالی است.")
@@ -107,12 +108,13 @@ class ContentPackageValidator {
     val sentenceMap = mutableMapOf<String, String>()
     val sentenceOrderIndices = mutableSetOf<Int>()
     dto.sentences.forEachIndexed { index, sentence ->
-      if (sentence.id.isBlank()) {
+      val cleanSentenceId = sentence.id.trim()
+      if (cleanSentenceId.isBlank()) {
         errors += missingField("sentences[$index].id", "شناسه جمله خالی است.")
-      } else if (sentenceMap.containsKey(sentence.id)) {
-        errors += duplicateId("sentences[$index].id", "شناسه جمله تکراری است: ${sentence.id}")
+      } else if (sentenceMap.containsKey(cleanSentenceId)) {
+        errors += duplicateId("sentences[$index].id", "شناسه جمله تکراری است: $cleanSentenceId")
       } else {
-        sentenceMap[sentence.id] = sentence.text
+        sentenceMap[cleanSentenceId] = sentence.text
       }
 
       val resolvedOrder = sentence.orderIndex ?: index
@@ -128,23 +130,26 @@ class ContentPackageValidator {
       if (sentence.translationFa.isBlank()) {
         errors += missingField("sentences[$index].translationFa", "ترجمه فارسی جمله خالی است.")
       }
-      if (!sentence.speakerId.isNullOrBlank() && sentence.speakerId !in speakerIds) {
+      val cleanSpeakerRef = sentence.speakerId?.trim().orEmpty()
+      if (cleanSpeakerRef.isNotEmpty() && cleanSpeakerRef !in speakerIds) {
         errors +=
           ImportValidationError(
             code = ImportValidationErrorCode.INVALID_REFERENTIAL_INTEGRITY,
             fieldPath = "sentences[$index].speakerId",
-            messageFa = "گوینده '${sentence.speakerId}' در فهرست speakers تعریف نشده است.",
-            messageEn = "Sentence speakerId '${sentence.speakerId}' not found in speakers.",
+            messageFa = "گوینده '$cleanSpeakerRef' در فهرست speakers تعریف نشده است.",
+            messageEn = "Sentence speakerId '$cleanSpeakerRef' not found in speakers.",
           )
       }
     }
 
     val glossaryIds = mutableSetOf<String>()
+    val seenOccurrenceSpans = mutableSetOf<String>()
     dto.glossary.forEachIndexed { index, entry ->
-      if (entry.id.isBlank()) {
+      val cleanEntryId = entry.id.trim()
+      if (cleanEntryId.isBlank()) {
         errors += missingField("glossary[$index].id", "شناسه واژه در واژه‌نامه خالی است.")
-      } else if (!glossaryIds.add(entry.id)) {
-        errors += duplicateId("glossary[$index].id", "شناسه واژه تکراری است: ${entry.id}")
+      } else if (!glossaryIds.add(cleanEntryId)) {
+        errors += duplicateId("glossary[$index].id", "شناسه واژه تکراری است: $cleanEntryId")
       }
       if (entry.term.isBlank()) {
         errors += missingField("glossary[$index].term", "عنوان واژه انگلیسی خالی است.")
@@ -155,7 +160,7 @@ class ContentPackageValidator {
             code = ImportValidationErrorCode.INVALID_CEFR_LEVEL,
             fieldPath = "glossary[$index].cefr",
             messageFa = "سطح CEFR واژه '${entry.term}' نامعتبر است: ${entry.cefr}",
-            messageEn = "Invalid CEFR level '${entry.cefr}' on glossary entry '${entry.id}'.",
+            messageEn = "Invalid CEFR level '${entry.cefr}' on glossary entry '$cleanEntryId'.",
           )
       }
       val hasSenses = entry.senses.isNotEmpty()
@@ -165,32 +170,56 @@ class ContentPackageValidator {
       }
       val senseIds = mutableSetOf<String>()
       entry.senses.forEachIndexed { sIdx, sense ->
-        if (sense.id.isBlank()) {
+        val cleanSenseId = sense.id.trim()
+        if (cleanSenseId.isBlank()) {
           errors += missingField("glossary[$index].senses[$sIdx].id", "شناسه معنی واژه خالی است.")
-        } else if (!senseIds.add(sense.id)) {
-          errors += duplicateId("glossary[$index].senses[$sIdx].id", "شناسه معنی تکراری است: ${sense.id}")
+        } else if (!senseIds.add(cleanSenseId)) {
+          errors += duplicateId("glossary[$index].senses[$sIdx].id", "شناسه معنی تکراری است: $cleanSenseId")
         }
         if (sense.meaningFa.isBlank()) {
           errors += missingField("glossary[$index].senses[$sIdx].meaningFa", "معنی فارسی در sense خالی است.")
         }
       }
 
-      entry.sentenceIds.forEach { refSentenceId ->
-        if (refSentenceId !in sentenceMap) {
+      val declaredSentenceRefs = entry.sentenceIds.map { it.trim() }
+      val declaredSentenceRefSet = declaredSentenceRefs.toSet()
+      declaredSentenceRefs.forEach { refSentenceId ->
+        if (refSentenceId.isBlank() || refSentenceId !in sentenceMap) {
           errors +=
             ImportValidationError(
               code = ImportValidationErrorCode.INVALID_REFERENTIAL_INTEGRITY,
               fieldPath = "glossary[$index].sentenceIds",
               messageFa = "جمله '$refSentenceId' در ارجاع sentenceIds واژه '${entry.term}' یافت نشد.",
-              messageEn = "Glossary entry '${entry.id}' references missing sentenceId '$refSentenceId'.",
+              messageEn = "Glossary entry '$cleanEntryId' references missing sentenceId '$refSentenceId'.",
             )
         }
       }
 
       entry.occurrences.forEachIndexed { oIdx, occ ->
+        val cleanOccSentenceId = occ.sentenceId.trim()
+        if (declaredSentenceRefSet.isNotEmpty() &&
+          cleanOccSentenceId in sentenceMap &&
+          cleanOccSentenceId !in declaredSentenceRefSet
+        ) {
+          errors +=
+            ImportValidationError(
+              code = ImportValidationErrorCode.INVALID_REFERENTIAL_INTEGRITY,
+              fieldPath = "glossary[$index].occurrences[$oIdx].sentenceId",
+              messageFa = "جمله '$cleanOccSentenceId' در رخداد واژه '${entry.term}' با فهرست sentenceIds آن هم‌خوانی ندارد.",
+              messageEn = "Occurrence sentenceId '$cleanOccSentenceId' on '$cleanEntryId' is missing from declared sentenceIds.",
+            )
+        }
+        val spanKey = "$cleanOccSentenceId::$cleanEntryId::${occ.start}::${occ.end}"
+        if (cleanEntryId.isNotBlank() && !seenOccurrenceSpans.add(spanKey)) {
+          errors +=
+            duplicateId(
+              "glossary[$index].occurrences[$oIdx]",
+              "بازه رخداد تکراری برای واژه '${entry.term}' در جمله '$cleanOccSentenceId' [${occ.start}, ${occ.end}).",
+            )
+        }
         validateOffset(
           fieldPrefix = "glossary[$index].occurrences[$oIdx]",
-          sentenceId = occ.sentenceId,
+          sentenceId = cleanOccSentenceId,
           surface = occ.surface,
           start = occ.start,
           end = occ.end,
@@ -201,18 +230,28 @@ class ContentPackageValidator {
     }
 
     dto.wordOccurrences.forEachIndexed { index, occ ->
-      if (occ.glossaryEntryId !in glossaryIds) {
+      val cleanEntryRef = occ.glossaryEntryId.trim()
+      val cleanOccSentenceId = occ.sentenceId.trim()
+      if (cleanEntryRef.isBlank() || cleanEntryRef !in glossaryIds) {
         errors +=
           ImportValidationError(
             code = ImportValidationErrorCode.INVALID_REFERENTIAL_INTEGRITY,
             fieldPath = "wordOccurrences[$index].glossaryEntryId",
-            messageFa = "مدخل واژه‌نامه '${occ.glossaryEntryId}' یافت نشد.",
-            messageEn = "WordOccurrence references missing glossaryEntryId '${occ.glossaryEntryId}'.",
+            messageFa = "مدخل واژه‌نامه '$cleanEntryRef' یافت نشد.",
+            messageEn = "WordOccurrence references missing glossaryEntryId '$cleanEntryRef'.",
+          )
+      }
+      val spanKey = "$cleanOccSentenceId::$cleanEntryRef::${occ.startOffset}::${occ.endOffset}"
+      if (cleanEntryRef.isNotBlank() && !seenOccurrenceSpans.add(spanKey)) {
+        errors +=
+          duplicateId(
+            "wordOccurrences[$index]",
+            "بازه رخداد تکراری برای مدخل '$cleanEntryRef' در جمله '$cleanOccSentenceId' [${occ.startOffset}, ${occ.endOffset}).",
           )
       }
       validateOffset(
         fieldPrefix = "wordOccurrences[$index]",
-        sentenceId = occ.sentenceId,
+        sentenceId = cleanOccSentenceId,
         surface = occ.surfaceForm,
         start = occ.startOffset,
         end = occ.endOffset,
@@ -224,10 +263,11 @@ class ContentPackageValidator {
     val questionIds = mutableSetOf<String>()
     val questionOrderIndices = mutableSetOf<Int>()
     dto.questions.forEachIndexed { index, question ->
-      if (question.id.isBlank()) {
+      val cleanQuestionId = question.id.trim()
+      if (cleanQuestionId.isBlank()) {
         errors += missingField("questions[$index].id", "شناسه پرسش خالی است.")
-      } else if (!questionIds.add(question.id)) {
-        errors += duplicateId("questions[$index].id", "شناسه پرسش تکراری است: ${question.id}")
+      } else if (!questionIds.add(cleanQuestionId)) {
+        errors += duplicateId("questions[$index].id", "شناسه پرسش تکراری است: $cleanQuestionId")
       }
       val resolvedOrder = question.orderIndex ?: index
       if (resolvedOrder < 0) {
@@ -280,6 +320,26 @@ class ContentPackageValidator {
         )
       return
     }
+    if (surface.isBlank()) {
+      errors +=
+        ImportValidationError(
+          code = ImportValidationErrorCode.INVALID_WORD_OFFSET,
+          fieldPath = "$fieldPrefix.surface",
+          messageFa = "متن سطحی رخداد واژه (surface) در جمله '$sentenceId' نمی‌تواند خالی باشد.",
+          messageEn = "Occurrence surface cannot be blank for sentence '$sentenceId'.",
+        )
+      return
+    }
+    if (surface != surface.trim()) {
+      errors +=
+        ImportValidationError(
+          code = ImportValidationErrorCode.INVALID_WORD_OFFSET,
+          fieldPath = "$fieldPrefix.surface",
+          messageFa = "متن سطحی رخداد '$surface' نباید فاصله اضافی در ابتدا یا انتها داشته باشد.",
+          messageEn = "Occurrence surface '$surface' must not contain leading or trailing whitespace.",
+        )
+      return
+    }
     if (start < 0 || end <= start || end > sentenceText.length) {
       errors +=
         ImportValidationError(
@@ -290,17 +350,31 @@ class ContentPackageValidator {
         )
       return
     }
-    if (surface.isNotBlank()) {
-      val slice = sentenceText.substring(start, end)
-      if (slice != surface) {
-        errors +=
-          ImportValidationError(
-            code = ImportValidationErrorCode.INVALID_WORD_OFFSET,
-            fieldPath = "$fieldPrefix.surface",
-            messageFa = "واژه '$surface' با زیررشته واقعی در بازه [$start, $end) یعنی '$slice' هم‌خوانی ندارد.",
-            messageEn = "Exact UTF-16 slice '$slice' at [$start, $end) does not match surface '$surface'.",
-          )
-      }
+    val slice = sentenceText.substring(start, end)
+    if (slice != surface) {
+      errors +=
+        ImportValidationError(
+          code = ImportValidationErrorCode.INVALID_WORD_OFFSET,
+          fieldPath = "$fieldPrefix.surface",
+          messageFa = "واژه '$surface' با زیررشته واقعی در بازه [$start, $end) یعنی '$slice' هم‌خوانی ندارد.",
+          messageEn = "Exact UTF-16 slice '$slice' at [$start, $end) does not match surface '$surface'.",
+        )
+      return
+    }
+    val prevChar = if (start > 0) sentenceText[start - 1] else null
+    val nextChar = if (end < sentenceText.length) sentenceText[end] else null
+    val startsInsideWord =
+      prevChar != null && prevChar.isLetterOrDigit() && sentenceText[start].isLetterOrDigit()
+    val endsInsideWord =
+      nextChar != null && sentenceText[end - 1].isLetterOrDigit() && nextChar.isLetterOrDigit()
+    if (startsInsideWord || endsInsideWord) {
+      errors +=
+        ImportValidationError(
+          code = ImportValidationErrorCode.INVALID_WORD_OFFSET,
+          fieldPath = fieldPrefix,
+          messageFa = "محدوده [$start, $end) برای '$surface' در میان یک واژه قرار دارد و بر مرز کلمه منطبق نیست.",
+          messageEn = "Offset [$start, $end) for '$surface' splits inside a word boundary.",
+        )
     }
   }
 

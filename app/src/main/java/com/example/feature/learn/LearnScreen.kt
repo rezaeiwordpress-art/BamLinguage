@@ -847,18 +847,32 @@ private fun IntegritySummaryContent(report: ContentIntegrityReport) {
     horizontalArrangement = Arrangement.spacedBy(6.dp),
   ) {
     Icon(
-      imageVector = if (report.hasCompleteDictionaryCoverage) Icons.Rounded.Verified else Icons.Rounded.WarningAmber,
+      imageVector = if (report.isCoverageVerified) Icons.Rounded.Verified else Icons.Rounded.WarningAmber,
       contentDescription = null,
       tint =
         if (report.fatalErrors.isNotEmpty()) MaterialTheme.colorScheme.error
-        else if (report.hasCompleteDictionaryCoverage) MaterialTheme.colorScheme.tertiary
+        else if (report.isCoverageVerified) MaterialTheme.colorScheme.tertiary
         else MaterialTheme.colorScheme.primary,
       modifier = Modifier.size(18.dp),
     )
+    val coverageLabel =
+      if (report.fatalErrors.isNotEmpty()) {
+        "پوشش واژه‌نامه: تأییدنشده (دارای خطای ساختار یا ارجاع)"
+      } else {
+        val phrasePart =
+          if (report.detectedPhraseCount > 0) {
+            " • ${report.coveredPhraseCount} از ${report.detectedPhraseCount} عبارت"
+          } else {
+            ""
+          }
+        val statusSuffix = if (!report.isCoverageVerified) " (دارای هشدار پوشش)" else ""
+        "پوشش واژه‌نامه: ${report.coveragePercent}٪ (${report.coveredTokens} از ${report.totalMeaningfulTokens} واژه$phrasePart)$statusSuffix"
+      }
     Text(
-      text = "پوشش واژه‌نامه: ${report.coveragePercent}٪ (${report.coveredTokens} از ${report.totalMeaningfulTokens} توکن)",
+      text = coverageLabel,
       style = MaterialTheme.typography.labelLarge,
       fontWeight = FontWeight.Bold,
+      modifier = Modifier.testTag("integrity_coverage_label"),
     )
   }
 
@@ -878,12 +892,13 @@ private fun IntegritySummaryContent(report: ContentIntegrityReport) {
     }
   }
 
-  if (report.missingVocabularyWarnings.isNotEmpty()) {
+  if (report.missingVocabularyWarnings.isNotEmpty() || report.missingPhrases.isNotEmpty()) {
     Text(
-      text = "هشدارهای پوشش واژگان (${report.missingVocabularyWarnings.size}):",
+      text = "هشدارهای پوشش واژگان و عبارات (${report.missingVocabularyWarnings.size}):",
       style = MaterialTheme.typography.labelMedium,
       color = MaterialTheme.colorScheme.primary,
       fontWeight = FontWeight.Bold,
+      modifier = Modifier.testTag("integrity_missing_vocab_header"),
     )
     report.missingVocabularyWarnings.forEach { warn ->
       Text(text = "• ${warn.messageFa}", style = MaterialTheme.typography.bodySmall)
@@ -906,9 +921,9 @@ private fun IntegritySummaryContent(report: ContentIntegrityReport) {
     }
   }
 
-  if (report.hasCompleteDictionaryCoverage && report.linguisticWarnings.isEmpty()) {
+  if (report.isCoverageVerified && report.linguisticWarnings.isEmpty()) {
     Text(
-      text = "تمام بررسی‌های یکپارچگی (شناسه‌های یکتا، پوشش کامل واژگان، ریشه‌یابی و بازه‌های متنی) با موفقیت تأیید شدند.",
+      text = "تمام بررسی‌های یکپارچگی (شناسه‌های یکتا، پوشش کامل واژگان و عبارات، ریشه‌یابی و بازه‌های متنی) با موفقیت تأیید شدند.",
       style = MaterialTheme.typography.bodySmall,
       color = MaterialTheme.colorScheme.tertiary,
     )

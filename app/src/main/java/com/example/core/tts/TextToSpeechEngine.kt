@@ -90,6 +90,8 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
   private val _availableVoices = MutableStateFlow<List<TtsVoiceOption>>(emptyList())
   override val availableVoices: StateFlow<List<TtsVoiceOption>> = _availableVoices.asStateFlow()
 
+  private val stateLock = Any()
+
   private var textToSpeech: TextToSpeech? = null
   private var isReady = false
   private var rawVoices: List<Voice> = emptyList()
@@ -107,7 +109,7 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
       textToSpeech =
         TextToSpeech(appContext) { initStatus ->
           if (initStatus == TextToSpeech.SUCCESS) {
-            val tts = textToSpeech
+            val tts = synchronized(stateLock) { textToSpeech }
             val usResult = tts?.setLanguage(Locale.US)
             val ukResult =
               if (usResult == TextToSpeech.LANG_MISSING_DATA ||
@@ -126,29 +128,25 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
                   "داده‌های صوتی زبان انگلیسی روی دستگاه یافت نشد؛ مطالعه متنی بدون صوت در دسترس است."
                 )
             } else {
-              isReady = true
+              synchronized(stateLock) {
+                isReady = true
+              }
               loadAvailableEnglishVoices(tts)
               tts?.setOnUtteranceProgressListener(
                 object : UtteranceProgressListener() {
                   override fun onStart(utteranceId: String?) = Unit
 
                   override fun onDone(utteranceId: String?) {
-                    if (!isReady) return
-                    if (utteranceId == currentUtteranceId && paragraphQueue.isNotEmpty()) {
-                      playNextInQueue()
-                    } else if (utteranceId == currentUtteranceId) {
-                      currentParagraphItem = null
-                      _status.value = TtsStatus.Ready
-                    }
+                    handleUtteranceFinished(utteranceId)
                   }
 
                   @Deprecated("Deprecated in Java")
                   override fun onError(utteranceId: String?) {
-                    handleUtteranceError()
+                    handleUtteranceFinished(utteranceId)
                   }
 
                   override fun onError(utteranceId: String?, errorCode: Int) {
-                    handleUtteranceError()
+                    handleUtteranceFinished(utteranceId)
                   }
                 }
               )
@@ -169,12 +167,21 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
     }
   }
 
-  private fun handleUtteranceError() {
-    if (!isReady) return
-    if (paragraphQueue.isNotEmpty()) {
+  private fun handleUtteranceFinished(utteranceId: String?) {
+    val shouldPlayNext =
+      synchronized(stateLock) {
+        if (!isReady) return
+        if (utteranceId != null && utteranceId != currentUtteranceId) return
+        if (paragraphQueue.isNotEmpty()) {
+          true
+        } else {
+          currentParagraphItem = null
+          false
+        }
+      }
+    if (shouldPlayNext) {
       playNextInQueue()
     } else {
-      currentParagraphItem = null
       _status.value = TtsStatus.Ready
     }
   }
@@ -188,7 +195,9 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
           .orEmpty()
       }.getOrDefault(emptyList())
 
-    rawVoices = voices
+    synchronized(stateLock) {
+      rawVoices = voices
+    }
     _availableVoices.value =
       voices.mapIndexed { idx, voice ->
         val tag = voice.locale?.toLanguageTag().orEmpty()
@@ -232,10 +241,12 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
     preferredVoiceName: String?,
   ) {
     val sanitized = text.trim()
-    if (sanitized.isEmpty() || !isReady) return
-
-    paragraphQueue.clear()
-    currentParagraphItem = null
+    if (sanitized.isEmpty()) return
+    synchronized(stateLock) {
+      if (!isReady) return
+      paragraphQueue.clear()
+      currentParagraphItem = null
+    }
     speakInternal(
       text = sanitized,
       itemId = itemId,
@@ -254,55 +265,80 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
     defaultVoiceName: String?,
   ) {
     val nonEmpty = items.filter { it.text.isNotBlank() }
-    if (nonEmpty.isEmpty() || !isReady) return
+    if (nonEmpty.isEmpty()) return
 
-    paragraphQueue = nonEmpty.toMutableList()
-    paragraphRate = speechRate
-    paragraphAccent = accent
-    paragraphSpeakerMap = speakerVoiceMap
-    paragraphDefaultVoice = defaultVoiceName
+    synchronized(stateLock) {
+      if (!isReady) return
+      paragraphQueue = nonEmpty.toMutableList()
+      paragraphRate = speechRate
+      paragraphAccent = accent
+      paragraphSpeakerMap = speakerVoiceMap
+      paragraphDefaultVoice = defaultVoiceName
+    }
     playNextInQueue()
   }
 
   private fun playNextInQueue() {
-    if (paragraphQueue.isEmpty()) {
-      currentParagraphItem = null
+    val nextAndConfig =
+      synchronized(stateLock) {
+        if (!isReady) return
+        if (paragraphQueue.isEmpty()) {
+          currentParagraphItem = null
+          null
+        } else {
+          val next = paragraphQueue.removeAt(0)
+          currentParagraphItem = next
+          val speakerVoice = next.speakerId?.let { paragraphSpeakerMap[it] } ?: paragraphDefaultVoice
+          Triple(next, Triple(paragraphRate, paragraphAccent, speakerVoice), Unit)
+        }
+      }
+
+    if (nextAndConfig == null) {
       _status.value = TtsStatus.Ready
       return
     }
-    val next = paragraphQueue.removeAt(0)
-    currentParagraphItem = next
-    val speakerVoice = next.speakerId?.let { paragraphSpeakerMap[it] } ?: paragraphDefaultVoice
+    val (next, config, _) = nextAndConfig
     speakInternal(
       text = next.text.trim(),
       itemId = next.itemId,
       isParagraphMode = true,
-      speechRate = paragraphRate,
-      accent = paragraphAccent,
-      preferredVoiceName = speakerVoice,
+      speechRate = config.first,
+      accent = config.second,
+      preferredVoiceName = config.third,
     )
   }
 
   override fun pause() {
-    if (!isReady) return
-    val current = currentParagraphItem
-    textToSpeech?.stop()
-    if (current != null) {
-      paragraphQueue.add(0, current)
-      currentParagraphItem = null
-      _status.value =
-        TtsStatus.Paused(
-          activeItemId = current.itemId,
-          remainingCount = paragraphQueue.size,
-        )
-    } else {
-      _status.value = TtsStatus.Ready
-    }
+    val (tts, pausedState) =
+      synchronized(stateLock) {
+        if (!isReady) return
+        val current = currentParagraphItem
+        val state =
+          if (current != null) {
+            paragraphQueue.add(0, current)
+            currentParagraphItem = null
+            currentUtteranceId = null
+            TtsStatus.Paused(
+              activeItemId = current.itemId,
+              remainingCount = paragraphQueue.size,
+            )
+          } else {
+            currentUtteranceId = null
+            TtsStatus.Ready
+          }
+        textToSpeech to state
+      }
+    tts?.stop()
+    _status.value = pausedState
   }
 
   override fun resume() {
-    if (!isReady) return
-    if (paragraphQueue.isNotEmpty()) {
+    val hasItems =
+      synchronized(stateLock) {
+        if (!isReady) return
+        paragraphQueue.isNotEmpty()
+      }
+    if (hasItems) {
       playNextInQueue()
     } else {
       _status.value = TtsStatus.Ready
@@ -310,29 +346,41 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
   }
 
   override fun stop() {
-    paragraphQueue.clear()
-    currentParagraphItem = null
-    currentUtteranceId = null
-    textToSpeech?.stop()
-    if (isReady) {
+    val (tts, ready) =
+      synchronized(stateLock) {
+        paragraphQueue.clear()
+        currentParagraphItem = null
+        currentUtteranceId = null
+        textToSpeech to isReady
+      }
+    tts?.stop()
+    if (ready) {
       _status.value = TtsStatus.Ready
     }
   }
 
   override fun refreshVoices() {
-    if (isReady) {
-      loadAvailableEnglishVoices(textToSpeech)
-    }
+    val tts =
+      synchronized(stateLock) {
+        if (!isReady) return
+        textToSpeech
+      }
+    loadAvailableEnglishVoices(tts)
   }
 
   override fun shutdown() {
-    isReady = false
-    paragraphQueue.clear()
-    currentParagraphItem = null
-    currentUtteranceId = null
-    textToSpeech?.stop()
-    textToSpeech?.shutdown()
-    textToSpeech = null
+    val tts =
+      synchronized(stateLock) {
+        isReady = false
+        paragraphQueue.clear()
+        currentParagraphItem = null
+        currentUtteranceId = null
+        val ref = textToSpeech
+        textToSpeech = null
+        ref
+      }
+    tts?.stop()
+    tts?.shutdown()
   }
 
   private fun speakInternal(
@@ -343,11 +391,16 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
     accent: TtsAccent,
     preferredVoiceName: String?,
   ) {
-    val tts = textToSpeech ?: return
-    applyVoiceOrAccent(tts, accent, preferredVoiceName)
-    tts.setSpeechRate(speechRate.coerceIn(0.6f, 1.5f))
     val utteranceId = UUID.randomUUID().toString()
-    currentUtteranceId = utteranceId
+    val (tts, voicesSnapshot) =
+      synchronized(stateLock) {
+        val ref = textToSpeech ?: return
+        if (!isReady) return
+        currentUtteranceId = utteranceId
+        ref to rawVoices
+      }
+    applyVoiceOrAccent(tts, voicesSnapshot, accent, preferredVoiceName)
+    tts.setSpeechRate(speechRate.coerceIn(0.6f, 1.5f))
     _status.value =
       TtsStatus.Speaking(
         text = text,
@@ -356,6 +409,11 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
       )
     val result = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     if (result == TextToSpeech.ERROR) {
+      synchronized(stateLock) {
+        if (currentUtteranceId == utteranceId) {
+          currentUtteranceId = null
+        }
+      }
       _status.value =
         TtsStatus.Unavailable("پخش صدا با خطا مواجه شد؛ متن همچنان قابل مطالعه است.")
     }
@@ -363,12 +421,13 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
 
   private fun applyVoiceOrAccent(
     tts: TextToSpeech,
+    voicesSnapshot: List<Voice>,
     accent: TtsAccent,
     preferredVoiceName: String?,
   ) {
     val exactVoice =
       if (!preferredVoiceName.isNullOrBlank()) {
-        rawVoices.firstOrNull { it.name == preferredVoiceName }
+        voicesSnapshot.firstOrNull { it.name == preferredVoiceName }
       } else {
         null
       }
@@ -386,10 +445,10 @@ class AndroidTextToSpeechEngine(context: Context) : TextToSpeechEngine {
       }
 
     val accentVoice =
-      rawVoices.firstOrNull {
+      voicesSnapshot.firstOrNull {
         !it.isNetworkConnectionRequired &&
           it.locale?.country.equals(targetLocale.country, ignoreCase = true)
-      } ?: rawVoices.firstOrNull { !it.isNetworkConnectionRequired }
+      } ?: voicesSnapshot.firstOrNull { !it.isNetworkConnectionRequired }
 
     if (accentVoice != null) {
       runCatching { tts.voice = accentVoice }

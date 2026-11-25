@@ -520,7 +520,7 @@ fun ProfileScreen(
               color = MaterialTheme.colorScheme.primary,
             )
             Text(
-              text = "نسخه طرحواره JSON: 1 • پایگاه داده: Room v2 (۱۲ جدول + مهاجرت ۱→۲)",
+              text = "نسخه طرحواره JSON: 1 • پایگاه داده: Room v4 (۱۳ جدول + مهاجرت‌های ۱→۴)",
               style = MaterialTheme.typography.bodySmall,
             )
             Text(

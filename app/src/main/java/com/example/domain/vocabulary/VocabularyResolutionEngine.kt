@@ -73,6 +73,73 @@ class VocabularyResolutionEngine {
     }.toList()
   }
 
+  data class IndexedPhrasePattern(
+    val entry: GlossaryEntry,
+    val phraseTokens: List<String>,
+  )
+
+  class GlossaryLookupIndex(entries: List<GlossaryEntry>) {
+    val entryById: Map<String, GlossaryEntry> = entries.associateBy { it.id }
+    val multiwordPatterns: List<IndexedPhrasePattern>
+    private val singleWordBuckets: Map<String, List<GlossaryEntry>>
+
+    init {
+      val multiPatterns = mutableListOf<IndexedPhrasePattern>()
+      val buckets = mutableMapOf<String, MutableList<GlossaryEntry>>()
+
+      for (entry in entries) {
+        if (entry.isMultiword) {
+          val candidatePhrases =
+            (listOf(entry.term, entry.normalizedTerm) + entry.forms)
+              .map { it.trim().lowercase() }
+              .filter { it.contains(' ') }
+              .distinct()
+              .sortedByDescending { it.length }
+          for (phrase in candidatePhrases) {
+            val tokens = phrase.split(Regex("\\s+")).filter { it.isNotEmpty() }
+            if (tokens.size >= 2) {
+              multiPatterns += IndexedPhrasePattern(entry = entry, phraseTokens = tokens)
+            }
+          }
+        } else {
+          val keys =
+            buildSet {
+              add(entry.normalizedTerm.trim().lowercase())
+              add(entry.term.trim().lowercase())
+              if (entry.lemma.isNotBlank()) add(entry.lemma.trim().lowercase())
+              entry.forms.forEach { form ->
+                val norm = form.trim().lowercase()
+                if (norm.isNotEmpty()) add(norm)
+              }
+            }
+          for (k in keys) {
+            if (k.isNotEmpty()) {
+              buckets.getOrPut(k) { mutableListOf() }.add(entry)
+            }
+          }
+        }
+      }
+
+      multiwordPatterns = multiPatterns
+      singleWordBuckets = buckets
+    }
+
+    fun candidateSingleWordEntries(
+      normalizedToken: String,
+      lemmaCandidates: List<MorphologyAnalyzer.LemmaCandidate>,
+    ): List<GlossaryEntry> {
+      val result = LinkedHashMap<String, GlossaryEntry>()
+      singleWordBuckets[normalizedToken]?.forEach { result[it.id] = it }
+      for (cand in lemmaCandidates) {
+        val key = cand.lemma.trim().lowercase()
+        singleWordBuckets[key]?.forEach { result[it.id] = it }
+      }
+      return result.values.toList()
+    }
+  }
+
+  fun buildIndex(entries: List<GlossaryEntry>): GlossaryLookupIndex = GlossaryLookupIndex(entries)
+
   fun resolveInSentence(
     sentence: Sentence,
     tappedOffset: Int,
@@ -80,7 +147,23 @@ class VocabularyResolutionEngine {
     sentenceOccurrences: List<WordOccurrence>,
     fallbackGlobalGlossary: List<GlossaryEntry> = emptyList(),
   ): ContextualResolutionResult? {
-    val tokens = tokenizeSentence(sentence.englishText)
+    val allEntries = (packageGlossary + fallbackGlobalGlossary).distinctBy { it.id }
+    val index = buildIndex(allEntries)
+    return resolveInSentenceIndexed(
+      sentence = sentence,
+      tappedOffset = tappedOffset,
+      index = index,
+      sentenceOccurrences = sentenceOccurrences,
+    )
+  }
+
+  fun resolveInSentenceIndexed(
+    sentence: Sentence,
+    tappedOffset: Int,
+    index: GlossaryLookupIndex,
+    sentenceOccurrences: List<WordOccurrence>,
+    tokens: List<SentenceToken> = tokenizeSentence(sentence.englishText),
+  ): ContextualResolutionResult? {
     if (tokens.isEmpty()) return null
 
     val tokenIndex =
@@ -91,7 +174,7 @@ class VocabularyResolutionEngine {
 
     val tappedToken = tokens[tokenIndex]
     val predictedPos = predictContextualPos(tokens, tokenIndex, sentence.englishText)
-    val entryById = packageGlossary.associateBy { it.id }
+    val entryById = index.entryById
 
     val scoredMatches = mutableMapOf<String, ResolvedGlossaryMatch>()
     val phraseMatches = mutableListOf<ResolvedGlossaryMatch>()
@@ -124,49 +207,39 @@ class VocabularyResolutionEngine {
     }
 
     // 2. Deterministic multiword phrase scan across contiguous tokens covering tokenIndex
-    val allEntries = (packageGlossary + fallbackGlobalGlossary).distinctBy { it.id }
-    val multiwordEntries = allEntries.filter { it.isMultiword }
-    for (entry in multiwordEntries) {
-      val candidatePhrases =
-        (listOf(entry.term, entry.normalizedTerm) + entry.forms)
-          .map { it.trim().lowercase() }
-          .filter { it.contains(' ') }
-          .distinct()
-          .sortedByDescending { it.length }
-
-      for (phrase in candidatePhrases) {
-        val phraseTokens = phrase.split(Regex("\\s+"))
-        val span = findPhraseSpanCoveringToken(tokens, tokenIndex, phraseTokens)
-        if (span != null) {
-          val score = 950 + phraseTokens.size * 20 + posCompatibilityScore(entry.partOfSpeech, predictedPos)
-          val existing = scoredMatches[entry.id]
-          if (existing == null || score > existing.score) {
-            val match =
-              ResolvedGlossaryMatch(
-                entry = entry,
-                recommendedSense = selectBestSense(entry, predictedPos, sentence.englishText),
-                matchReason = "تطابق عبارت چندواژه‌ای (${phraseTokens.size} واژه)",
-                score = score,
-              )
-            scoredMatches[entry.id] = match
-            if (phraseMatches.none { it.entry.id == entry.id }) {
-              phraseMatches += match
-            }
+    for (pattern in index.multiwordPatterns) {
+      val entry = pattern.entry
+      val phraseTokens = pattern.phraseTokens
+      val span = findPhraseSpanCoveringToken(tokens, tokenIndex, phraseTokens)
+      if (span != null) {
+        val score = 950 + phraseTokens.size * 20 + posCompatibilityScore(entry.partOfSpeech, predictedPos)
+        val existing = scoredMatches[entry.id]
+        if (existing == null || score > existing.score) {
+          val match =
+            ResolvedGlossaryMatch(
+              entry = entry,
+              recommendedSense = selectBestSense(entry, predictedPos, sentence.englishText),
+              matchReason = "تطابق عبارت چندواژه‌ای (${phraseTokens.size} واژه)",
+              score = score,
+            )
+          scoredMatches[entry.id] = match
+          if (phraseMatches.none { it.entry.id == entry.id }) {
+            phraseMatches += match
           }
-          if (span.second - span.first > matchedSpanEnd - matchedSpanStart) {
-            matchedSpanStart = span.first
-            matchedSpanEnd = span.second
-            matchedSurface = sentence.englishText.substring(span.first, span.second)
-          }
+        }
+        if (span.second - span.first > matchedSpanEnd - matchedSpanStart) {
+          matchedSpanStart = span.first
+          matchedSpanEnd = span.second
+          matchedSurface = sentence.englishText.substring(span.first, span.second)
         }
       }
     }
 
-    // 3. Exact term, inflected forms, and morphology/lemma resolution
+    // 3. Exact term, inflected forms, and morphology/lemma resolution via O(1) bucket index
     val lemmaCandidates = MorphologyAnalyzer.resolveLemmas(tappedToken.normalized)
+    val candidateEntries = index.candidateSingleWordEntries(tappedToken.normalized, lemmaCandidates)
 
-    for (entry in allEntries) {
-      if (entry.isMultiword) continue
+    for (entry in candidateEntries) {
       val packageBonus = if (entry.packageId == sentence.packageId) 100 else 0
       val posBonus = posCompatibilityScore(entry.partOfSpeech, predictedPos)
 

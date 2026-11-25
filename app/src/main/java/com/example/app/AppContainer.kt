@@ -6,8 +6,10 @@ import com.example.content.validation.ContentIntegrityAnalyzer
 import com.example.content.validation.ContentPackageValidator
 import com.example.core.ai.AiService
 import com.example.core.ai.DisabledOfflineAiProvider
+import com.example.core.common.AppTimeRefreshCoordinator
 import com.example.core.common.DefaultDispatcherProvider
 import com.example.core.common.DispatcherProvider
+import com.example.core.common.TimeRefreshSource
 import com.example.core.datastore.UserPreferencesDataStore
 import com.example.core.tts.AndroidTextToSpeechEngine
 import com.example.core.tts.TextToSpeechEngine
@@ -50,12 +52,17 @@ interface AppContainer {
   val createSrsCardUseCase: CreateSrsCardUseCase
   val reviewSrsCardUseCase: ReviewSrsCardUseCase
   val deleteSrsCardUseCase: DeleteSrsCardUseCase
+  val timeRefreshSource: TimeRefreshSource
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
   private val appContext = context.applicationContext
 
   override val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
+
+  override val timeRefreshSource: TimeRefreshSource by lazy {
+    AppTimeRefreshCoordinator(dispatchers = dispatchers)
+  }
 
   override val database: BamLinguageDatabase by lazy {
     BamLinguageDatabase.create(appContext)

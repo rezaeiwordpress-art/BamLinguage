@@ -10,6 +10,7 @@ import com.example.domain.model.ContentPackageSummary
 import com.example.domain.model.DashboardStats
 import com.example.domain.model.GlossaryEntry
 import com.example.domain.model.LearningProgress
+import com.example.domain.model.QuizAttempt
 import com.example.domain.model.ReaderBookmark
 import com.example.domain.model.SrsCard
 import com.example.domain.model.SrsReviewLog
@@ -36,6 +37,12 @@ interface ContentRepository {
   suspend fun getPackageCount(): Int
 }
 
+sealed interface SrsCardInsertOutcome {
+  data class Inserted(val card: SrsCard) : SrsCardInsertOutcome
+
+  data class AlreadyExists(val existingCard: SrsCard) : SrsCardInsertOutcome
+}
+
 interface LearningRepository {
   fun observeDashboardStats(nowEpochMs: Long): Flow<DashboardStats>
 
@@ -59,7 +66,13 @@ interface LearningRepository {
 
   fun observeProgressForPackage(packageId: String): Flow<LearningProgress?>
 
+  fun observeQuizAttemptsForPackage(packageId: String): Flow<List<QuizAttempt>>
+
+  fun observeAllQuizAttempts(): Flow<List<QuizAttempt>>
+
   suspend fun getSrsCardByContentId(contentId: String): SrsCard?
+
+  suspend fun insertSrsCardIfAbsent(card: SrsCard): SrsCardInsertOutcome
 
   suspend fun upsertSrsCard(card: SrsCard)
 
@@ -76,6 +89,14 @@ interface LearningRepository {
   suspend fun deleteBookmark(packageId: String, sentenceId: String)
 
   suspend fun upsertProgress(progress: LearningProgress)
+
+  suspend fun saveQuizAttempt(
+    packageId: String,
+    questionId: String,
+    selectedOptionIndex: Int,
+    isCorrect: Boolean,
+    nowEpochMs: Long = System.currentTimeMillis(),
+  )
 
   suspend fun resetReadingProgressAndBookmarks()
 

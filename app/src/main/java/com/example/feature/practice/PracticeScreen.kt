@@ -249,6 +249,7 @@ fun PracticeScreen(
           ) { card ->
             DeckCardRow(
               card = card,
+              currentTimeEpochMs = uiState.currentTimeEpochMs,
               onSpeak = { viewModel.speakText(card.frontTerm) },
               onDelete = { viewModel.deleteCard(card.cardId) },
             )
@@ -550,10 +551,11 @@ private fun ReviewSessionView(
 @Composable
 private fun DeckCardRow(
   card: SrsCard,
+  currentTimeEpochMs: Long,
   onSpeak: () -> Unit,
   onDelete: () -> Unit,
 ) {
-  val displayStatus = SrsScheduler.displayStatusFor(card, System.currentTimeMillis())
+  val displayStatus = SrsScheduler.displayStatusFor(card, currentTimeEpochMs)
   Card(
     modifier = Modifier.fillMaxWidth().testTag("deck_card_${card.cardId}"),
     shape = MaterialTheme.shapes.medium,

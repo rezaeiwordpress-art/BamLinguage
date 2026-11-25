@@ -1,5 +1,6 @@
 package com.example.domain.srs
 
+import com.example.core.common.StableIdGenerator
 import com.example.domain.model.ReaderWordStatus
 import com.example.domain.model.ReviewQuality
 import com.example.domain.model.SrsCard
@@ -140,24 +141,22 @@ class SrsScheduler {
       normalizedLemma: String,
       pos: String,
       senseId: String,
-    ): String {
-      val cleanLemma = normalizedLemma.trim().lowercase().ifBlank { "unknown" }
-      val cleanPos = pos.trim().lowercase().ifBlank { "word" }
-      val cleanSense = senseId.trim().lowercase().ifBlank { "sense-1" }
-      return "word:$cleanLemma:$cleanPos:$cleanSense"
-    }
+    ): String =
+      StableIdGenerator.buildWordContentId(
+        normalizedLemma = normalizedLemma,
+        pos = pos,
+        senseId = senseId,
+      )
 
     fun buildSentenceContentId(
       packageId: String?,
       sourceSentenceId: String?,
       englishText: String,
-    ): String {
-      val cleanText = englishText.trim().lowercase().replace(Regex("\\s+"), " ")
-      return if (!packageId.isNullOrBlank() && !sourceSentenceId.isNullOrBlank()) {
-        "sentence:${packageId.trim()}:${sourceSentenceId.trim()}"
-      } else {
-        "sentence:text:${cleanText.hashCode()}"
-      }
-    }
+    ): String =
+      StableIdGenerator.buildSentenceContentId(
+        packageId = packageId,
+        sourceSentenceId = sourceSentenceId,
+        englishText = englishText,
+      )
   }
 }

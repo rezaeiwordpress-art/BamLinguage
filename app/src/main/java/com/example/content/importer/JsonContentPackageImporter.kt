@@ -277,14 +277,15 @@ class JsonContentPackageImporter(
         isBundledSample = isBundledSample,
       )
 
-    fun scopedId(rawId: String): String = "$pkgId::$rawId"
+    fun scopedId(rawId: String): String = "$pkgId::${rawId.trim()}"
 
     val speakers =
       dto.speakers.map { spk ->
+        val cleanSpeakerId = spk.id.trim()
         Speaker(
-          id = scopedId(spk.id),
+          id = scopedId(cleanSpeakerId),
           packageId = pkgId,
-          sourceSpeakerId = spk.id,
+          sourceSpeakerId = cleanSpeakerId,
           name = spk.name.trim(),
           nameFa = spk.nameFa.ifBlank { spk.name }.trim(),
           role = spk.role.trim(),
@@ -296,10 +297,11 @@ class JsonContentPackageImporter(
         .mapIndexed { idx, s -> (s.orderIndex ?: idx) to s }
         .sortedBy { it.first }
         .map { (resolvedOrder, s) ->
+          val cleanSentenceId = s.id.trim()
           Sentence(
-            id = scopedId(s.id),
+            id = scopedId(cleanSentenceId),
             packageId = pkgId,
-            sourceSentenceId = s.id,
+            sourceSentenceId = cleanSentenceId,
             orderIndex = resolvedOrder,
             speakerId = s.speakerId?.takeIf { it.isNotBlank() }?.let { scopedId(it) },
             englishText = s.text,
@@ -313,7 +315,8 @@ class JsonContentPackageImporter(
 
     val glossaryEntries =
       dto.glossary.map { g ->
-        val entryScopedId = scopedId(g.id)
+        val cleanGlossaryId = g.id.trim()
+        val entryScopedId = scopedId(cleanGlossaryId)
         val normalized = g.term.trim().lowercase()
         val lemma = g.lemma.ifBlank { normalized }.trim().lowercase()
         val cefr = CefrLevel.fromCode(g.cefr) ?: CefrLevel.A1
@@ -321,10 +324,11 @@ class JsonContentPackageImporter(
         val senses =
           if (g.senses.isNotEmpty()) {
             g.senses.mapIndexed { sIdx, sense ->
+              val cleanSenseId = sense.id.trim()
               GlossarySense(
-                id = "$entryScopedId::${sense.id}",
+                id = "$entryScopedId::$cleanSenseId",
                 glossaryEntryId = entryScopedId,
-                sourceSenseId = sense.id,
+                sourceSenseId = cleanSenseId,
                 orderIndex = sIdx,
                 meaningFa = sense.meaningFa.trim(),
                 definitionEn = sense.definitionEn.trim(),
@@ -370,7 +374,7 @@ class JsonContentPackageImporter(
         GlossaryEntry(
           id = entryScopedId,
           packageId = pkgId,
-          sourceGlossaryId = g.id,
+          sourceGlossaryId = cleanGlossaryId,
           term = g.term.trim(),
           normalizedTerm = normalized,
           lemma = lemma,
@@ -411,10 +415,11 @@ class JsonContentPackageImporter(
         .mapIndexed { idx, q -> (q.orderIndex ?: idx) to q }
         .sortedBy { it.first }
         .map { (resolvedOrder, q) ->
+          val cleanQuestionId = q.id.trim()
           ComprehensionQuestion(
-            id = scopedId(q.id),
+            id = scopedId(cleanQuestionId),
             packageId = pkgId,
-            sourceQuestionId = q.id,
+            sourceQuestionId = cleanQuestionId,
             orderIndex = resolvedOrder,
             promptEn = q.promptEn.trim(),
             promptFa = q.promptFa.ifBlank { q.promptEn }.trim(),

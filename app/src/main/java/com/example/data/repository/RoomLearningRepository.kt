@@ -1,24 +1,31 @@
 package com.example.data.repository
 
 import com.example.core.common.DispatcherProvider
+import com.example.core.common.StableIdGenerator
 import com.example.data.local.dao.LearningDao
 import com.example.data.mapper.toDomain
 import com.example.data.mapper.toEntity
 import com.example.domain.model.DashboardStats
 import com.example.domain.model.LearningProgress
+import com.example.domain.model.QuizAttempt
 import com.example.domain.model.ReaderBookmark
 import com.example.domain.model.SrsCard
 import com.example.domain.model.SrsReviewLog
 import com.example.domain.model.UserVocabularyItem
 import com.example.domain.repository.LearningRepository
+import com.example.domain.repository.SrsCardInsertOutcome
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 class RoomLearningRepository(
   private val learningDao: LearningDao,
   private val dispatchers: DispatcherProvider,
 ) : LearningRepository {
+
+  private val srsInsertMutex = Mutex()
 
   override fun observeDashboardStats(nowEpochMs: Long): Flow<DashboardStats> =
     learningDao.observeDashboardStats(nowEpochMs).map { it.toDomain() }
@@ -53,8 +60,27 @@ class RoomLearningRepository(
   override fun observeProgressForPackage(packageId: String): Flow<LearningProgress?> =
     learningDao.observeProgressForPackage(packageId).map { it?.toDomain() }
 
+  override fun observeQuizAttemptsForPackage(packageId: String): Flow<List<QuizAttempt>> =
+    learningDao.observeQuizAttemptsForPackage(packageId).map { list -> list.map { it.toDomain() } }
+
+  override fun observeAllQuizAttempts(): Flow<List<QuizAttempt>> =
+    learningDao.observeAllQuizAttempts().map { list -> list.map { it.toDomain() } }
+
   override suspend fun getSrsCardByContentId(contentId: String): SrsCard? =
     withContext(dispatchers.io) { learningDao.getSrsCardByContentId(contentId)?.toDomain() }
+
+  override suspend fun insertSrsCardIfAbsent(card: SrsCard): SrsCardInsertOutcome =
+    withContext(dispatchers.io) {
+      srsInsertMutex.withLock {
+        val rowId = learningDao.insertSrsCardIfAbsent(card.toEntity())
+        if (rowId != -1L) {
+          SrsCardInsertOutcome.Inserted(card)
+        } else {
+          val existing = learningDao.getSrsCardByContentId(card.contentId)?.toDomain() ?: card
+          SrsCardInsertOutcome.AlreadyExists(existing)
+        }
+      }
+    }
 
   override suspend fun upsertSrsCard(card: SrsCard) =
     withContext(dispatchers.io) { learningDao.upsertSrsCard(card.toEntity()) }
@@ -79,6 +105,24 @@ class RoomLearningRepository(
 
   override suspend fun upsertProgress(progress: LearningProgress) =
     withContext(dispatchers.io) { learningDao.upsertLearningProgress(progress.toEntity()) }
+
+  override suspend fun saveQuizAttempt(
+    packageId: String,
+    questionId: String,
+    selectedOptionIndex: Int,
+    isCorrect: Boolean,
+    nowEpochMs: Long,
+  ) =
+    withContext(dispatchers.io) {
+      learningDao.saveQuizAttempt(
+        attemptId = StableIdGenerator.buildQuizAttemptId(packageId, questionId),
+        packageId = packageId,
+        questionId = questionId,
+        selectedOptionIndex = selectedOptionIndex,
+        isCorrect = isCorrect,
+        answeredAtEpochMs = nowEpochMs,
+      )
+    }
 
   override suspend fun resetReadingProgressAndBookmarks() =
     withContext(dispatchers.io) { learningDao.resetReadingProgressAndBookmarks() }

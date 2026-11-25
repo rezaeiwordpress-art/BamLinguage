@@ -3,10 +3,13 @@ package com.example.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.core.common.AppTimeRefreshCoordinator
+import com.example.core.common.TimeRefreshSource
 import com.example.core.tts.TextToSpeechEngine
 import com.example.domain.model.ContentPackageSummary
 import com.example.domain.model.DashboardStats
 import com.example.domain.model.LearningProgress
+import com.example.domain.model.SrsCardState
 import com.example.domain.model.UserVocabularyItem
 import com.example.domain.repository.ContentRepository
 import com.example.domain.repository.LearningRepository
@@ -16,11 +19,15 @@ import com.example.domain.srs.LearningAnalyticsSummary
 import com.example.domain.usecase.CreateSrsCardResult
 import com.example.domain.usecase.CreateSrsCardUseCase
 import com.example.domain.usecase.EnsureBundledSamplePackageUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -57,6 +64,7 @@ data class HomeUiState(
         analytics.startedPackagesCount == 0
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
   contentRepository: ContentRepository,
   private val learningRepository: LearningRepository,
@@ -64,13 +72,30 @@ class HomeViewModel(
   private val ensureBundledSamplePackageUseCase: EnsureBundledSamplePackageUseCase,
   private val createSrsCardUseCase: CreateSrsCardUseCase,
   private val ttsEngine: TextToSpeechEngine,
+  private val timeRefreshSource: TimeRefreshSource = AppTimeRefreshCoordinator(),
 ) : ViewModel() {
 
   private val feedbackMessage = MutableStateFlow<String?>(null)
 
+  private val allCardsFlow = learningRepository.observeAllSrsCards()
+
+  private val upcomingDeadlinesFlow =
+    allCardsFlow
+      .map { cards ->
+        cards.filter { it.state != SrsCardState.NEW }.map { it.dueAtEpochMs }.sorted()
+      }
+      .distinctUntilChanged()
+
+  private val timeFlow = timeRefreshSource.observeRefreshTimestamps(upcomingDeadlinesFlow)
+
+  private val timedStatsFlow =
+    timeFlow.flatMapLatest { now ->
+      learningRepository.observeDashboardStats(now).map { stats -> now to stats }
+    }
+
   private val learningDataFlow =
     combine(
-      learningRepository.observeAllSrsCards(),
+      allCardsFlow,
       learningRepository.observeAllReviewLogs(),
       learningRepository.observeLearningProgress(),
       learningRepository.observeUserVocabulary(),
@@ -80,13 +105,12 @@ class HomeViewModel(
 
   val uiState: StateFlow<HomeUiState> =
     combine(
-      learningRepository.observeDashboardStats(System.currentTimeMillis()),
+      timedStatsFlow,
       contentRepository.observePackageSummaries(),
       learningDataFlow,
       preferencesRepository.userPreferences,
       feedbackMessage,
-    ) { stats, packages, learning, prefs, feedback ->
-      val now = System.currentTimeMillis()
+    ) { (now, stats), packages, learning, prefs, feedback ->
       val analytics =
         LearningAnalyticsCalculator.compute(
           cards = learning.cards,
@@ -153,6 +177,7 @@ class HomeViewModel(
           contextSentence = null,
           packageTitle = "واژه‌نامه شخصی",
           addToSrs = true,
+          nowEpochMs = timeRefreshSource.currentTimeMillis(),
         )
       feedbackMessage.value =
         when (result) {
@@ -181,6 +206,7 @@ class HomeViewModel(
     private val ensureBundledSamplePackageUseCase: EnsureBundledSamplePackageUseCase,
     private val createSrsCardUseCase: CreateSrsCardUseCase,
     private val ttsEngine: TextToSpeechEngine,
+    private val timeRefreshSource: TimeRefreshSource = AppTimeRefreshCoordinator(),
   ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -191,6 +217,7 @@ class HomeViewModel(
         ensureBundledSamplePackageUseCase = ensureBundledSamplePackageUseCase,
         createSrsCardUseCase = createSrsCardUseCase,
         ttsEngine = ttsEngine,
+        timeRefreshSource = timeRefreshSource,
       ) as T
   }
 }

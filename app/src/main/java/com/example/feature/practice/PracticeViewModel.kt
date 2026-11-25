@@ -3,6 +3,8 @@ package com.example.feature.practice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.core.common.AppTimeRefreshCoordinator
+import com.example.core.common.TimeRefreshSource
 import com.example.core.common.TtsAccent
 import com.example.core.datastore.UserPreferences
 import com.example.core.tts.TextToSpeechEngine
@@ -11,6 +13,7 @@ import com.example.core.tts.TtsVoiceOption
 import com.example.domain.model.ReaderWordStatus
 import com.example.domain.model.ReviewQuality
 import com.example.domain.model.SrsCard
+import com.example.domain.model.SrsCardState
 import com.example.domain.model.SrsCardType
 import com.example.domain.model.SrsReviewLog
 import com.example.domain.repository.LearningRepository
@@ -22,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -45,6 +50,7 @@ data class ReviewSessionState(
 }
 
 data class PracticeUiState(
+  val currentTimeEpochMs: Long = System.currentTimeMillis(),
   val allCards: List<SrsCard> = emptyList(),
   val dueQueue: List<SrsCard> = emptyList(),
   val newQueue: List<SrsCard> = emptyList(),
@@ -59,25 +65,24 @@ data class PracticeUiState(
   val feedbackMessage: String? = null,
 ) {
   val filteredDeck: List<SrsCard>
-    get() {
-      val now = System.currentTimeMillis()
-      return when (deckFilter) {
+    get() =
+      when (deckFilter) {
         PracticeDeckFilter.ALL -> allCards
         PracticeDeckFilter.DUE ->
-          allCards.filter { SrsScheduler.displayStatusFor(it, now) == ReaderWordStatus.DUE }
+          allCards.filter { SrsScheduler.displayStatusFor(it, currentTimeEpochMs) == ReaderWordStatus.DUE }
         PracticeDeckFilter.WORD -> allCards.filter { it.cardType == SrsCardType.WORD }
         PracticeDeckFilter.SENTENCE -> allCards.filter { it.cardType == SrsCardType.SENTENCE }
       }
-    }
 }
 
 class PracticeViewModel(
   private val ttsEngine: TextToSpeechEngine,
-  private val learningRepository: LearningRepository,
+  learningRepository: LearningRepository,
   private val preferencesRepository: PreferencesRepository,
   private val srsScheduler: SrsScheduler,
   private val reviewSrsCardUseCase: ReviewSrsCardUseCase,
   private val deleteSrsCardUseCase: DeleteSrsCardUseCase,
+  private val timeRefreshSource: TimeRefreshSource = AppTimeRefreshCoordinator(),
 ) : ViewModel() {
 
   private val deckFilter = MutableStateFlow(PracticeDeckFilter.ALL)
@@ -86,10 +91,29 @@ class PracticeViewModel(
     MutableStateFlow("She was running late and ran out of time at the station.")
   private val feedbackMessage = MutableStateFlow<String?>(null)
 
+  private val allCardsFlow = learningRepository.observeAllSrsCards()
+
+  private val upcomingDeadlinesFlow =
+    allCardsFlow
+      .map { cards ->
+        cards.filter { it.state != SrsCardState.NEW }.map { it.dueAtEpochMs }.sorted()
+      }
+      .distinctUntilChanged()
+
+  private val timeFlow = timeRefreshSource.observeRefreshTimestamps(upcomingDeadlinesFlow)
+
+  private val deckDataFlow =
+    combine(
+      timeFlow,
+      allCardsFlow,
+      learningRepository.observeRecentReviewLogs(30),
+    ) { now, cards, logs ->
+      PracticeDeckSnapshot(nowEpochMs = now, allCards = cards, logs = logs)
+    }
+
   val uiState: StateFlow<PracticeUiState> =
     combine(
-      learningRepository.observeAllSrsCards(),
-      learningRepository.observeRecentReviewLogs(30),
+      deckDataFlow,
       preferencesRepository.userPreferences,
       ttsEngine.status,
       combine(ttsEngine.availableVoices, deckFilter, activeSession, ttsInput, feedbackMessage) {
@@ -100,8 +124,9 @@ class PracticeViewModel(
         feedback ->
         PracticeTransient(voices, filter, session, input, feedback)
       },
-    ) { allCards, logs, prefs, tts, transient ->
-      val now = System.currentTimeMillis()
+    ) { deckData, prefs, tts, transient ->
+      val now = deckData.nowEpochMs
+      val allCards = deckData.allCards
       val dueQueue =
         allCards.filter { SrsScheduler.displayStatusFor(it, now) == ReaderWordStatus.DUE }
       val newQueue =
@@ -115,10 +140,11 @@ class PracticeViewModel(
         }
 
       PracticeUiState(
+        currentTimeEpochMs = now,
         allCards = allCards,
         dueQueue = dueQueue,
         newQueue = newQueue,
-        recentLogs = logs,
+        recentLogs = deckData.logs,
         deckFilter = transient.filter,
         session = transient.session,
         intervalPreviews = previews,
@@ -176,7 +202,11 @@ class PracticeViewModel(
     val card = session.currentCard ?: return
 
     viewModelScope.launch {
-      reviewSrsCardUseCase(card = card, quality = quality)
+      reviewSrsCardUseCase(
+        card = card,
+        quality = quality,
+        nowEpochMs = timeRefreshSource.currentTimeMillis(),
+      )
 
       val updatedRatings =
         session.ratingCounts + (quality to ((session.ratingCounts[quality] ?: 0) + 1))
@@ -242,6 +272,7 @@ class PracticeViewModel(
     private val srsScheduler: SrsScheduler,
     private val reviewSrsCardUseCase: ReviewSrsCardUseCase,
     private val deleteSrsCardUseCase: DeleteSrsCardUseCase,
+    private val timeRefreshSource: TimeRefreshSource = AppTimeRefreshCoordinator(),
   ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -252,9 +283,16 @@ class PracticeViewModel(
         srsScheduler = srsScheduler,
         reviewSrsCardUseCase = reviewSrsCardUseCase,
         deleteSrsCardUseCase = deleteSrsCardUseCase,
+        timeRefreshSource = timeRefreshSource,
       ) as T
   }
 }
+
+private data class PracticeDeckSnapshot(
+  val nowEpochMs: Long,
+  val allCards: List<SrsCard>,
+  val logs: List<SrsReviewLog>,
+)
 
 private data class PracticeTransient(
   val voices: List<TtsVoiceOption>,

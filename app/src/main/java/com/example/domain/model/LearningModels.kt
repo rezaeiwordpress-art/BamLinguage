@@ -78,6 +78,7 @@ data class LearningProgress(
   val totalQuestionsCount: Int,
   val lastReadSentenceIndex: Int,
   val updatedAtEpochMs: Long,
+  val completedSentenceIds: Set<String> = emptySet(),
 )
 
 data class UserVocabularyItem(
@@ -113,4 +114,14 @@ data class DashboardStats(
   val totalReviewLogs: Int = 0,
   val totalUserVocabulary: Int = 0,
   val totalBookmarks: Int = 0,
+)
+
+data class QuizAttempt(
+  val attemptId: String,
+  val packageId: String,
+  val questionId: String,
+  val selectedOptionIndex: Int,
+  val isCorrect: Boolean,
+  val attemptCount: Int = 1,
+  val answeredAtEpochMs: Long,
 )

@@ -9,6 +9,7 @@ import com.example.data.local.entity.GlossaryEntryEntity
 import com.example.data.local.entity.GlossarySenseEntity
 import com.example.data.local.entity.LearningProgressEntity
 import com.example.data.local.entity.QuestionEntity
+import com.example.data.local.entity.QuizAttemptEntity
 import com.example.data.local.entity.ReaderBookmarkEntity
 import com.example.data.local.entity.SentenceEntity
 import com.example.data.local.entity.SpeakerEntity
@@ -26,6 +27,7 @@ import com.example.domain.model.GlossarySense
 import com.example.domain.model.LearningProgress
 import com.example.domain.model.PackageMetadata
 import com.example.domain.model.PronunciationInfo
+import com.example.domain.model.QuizAttempt
 import com.example.domain.model.ReaderBookmark
 import com.example.domain.model.Sentence
 import com.example.domain.model.Speaker
@@ -399,6 +401,7 @@ fun LearningProgressEntity.toDomain(): LearningProgress =
     totalQuestionsCount = totalQuestionsCount,
     lastReadSentenceIndex = lastReadSentenceIndex,
     updatedAtEpochMs = updatedAtEpochMs,
+    completedSentenceIds = completedSentenceIds.toSet(),
   )
 
 fun LearningProgress.toEntity(): LearningProgressEntity =
@@ -412,6 +415,7 @@ fun LearningProgress.toEntity(): LearningProgressEntity =
     totalQuestionsCount = totalQuestionsCount,
     lastReadSentenceIndex = lastReadSentenceIndex,
     updatedAtEpochMs = updatedAtEpochMs,
+    completedSentenceIds = completedSentenceIds.toList().sorted(),
   )
 
 fun UserVocabularyEntity.toDomain(): UserVocabularyItem =
@@ -474,4 +478,26 @@ fun DashboardStatsRow.toDomain(): DashboardStats =
     totalReviewLogs = totalReviewLogs,
     totalUserVocabulary = totalUserVocabulary,
     totalBookmarks = totalBookmarks,
+  )
+
+fun QuizAttemptEntity.toDomain(): QuizAttempt =
+  QuizAttempt(
+    attemptId = attemptId,
+    packageId = packageId,
+    questionId = questionId,
+    selectedOptionIndex = selectedOptionIndex,
+    isCorrect = isCorrect,
+    attemptCount = attemptCount,
+    answeredAtEpochMs = answeredAtEpochMs,
+  )
+
+fun QuizAttempt.toEntity(): QuizAttemptEntity =
+  QuizAttemptEntity(
+    attemptId = attemptId,
+    packageId = packageId,
+    questionId = questionId,
+    selectedOptionIndex = selectedOptionIndex,
+    isCorrect = isCorrect,
+    attemptCount = attemptCount,
+    answeredAtEpochMs = answeredAtEpochMs,
   )

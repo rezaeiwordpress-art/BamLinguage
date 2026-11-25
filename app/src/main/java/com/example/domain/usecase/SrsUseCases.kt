@@ -1,5 +1,6 @@
 package com.example.domain.usecase
 
+import com.example.core.common.StableIdGenerator
 import com.example.domain.model.GlossaryEntry
 import com.example.domain.model.GlossarySense
 import com.example.domain.model.ReviewQuality
@@ -9,6 +10,7 @@ import com.example.domain.model.SrsCardState
 import com.example.domain.model.SrsCardType
 import com.example.domain.model.UserVocabularyItem
 import com.example.domain.repository.LearningRepository
+import com.example.domain.repository.SrsCardInsertOutcome
 import com.example.domain.srs.SrsScheduler
 import com.example.domain.vocabulary.MorphologyAnalyzer
 import java.util.UUID
@@ -29,14 +31,11 @@ class CreateSrsCardUseCase(
     packageTitle: String?,
     nowEpochMs: Long = System.currentTimeMillis(),
   ): CreateSrsCardResult {
-    val senseId = selectedSense?.sourceSenseId?.ifBlank { selectedSense.id } ?: "sense-1"
-    val lemma = entry.lemma.ifBlank { entry.normalizedTerm }.trim().lowercase()
-    val contentId = SrsScheduler.buildWordContentId(lemma, entry.partOfSpeech, senseId)
-
-    val existing = learningRepository.getSrsCardByContentId(contentId)
-    if (existing != null) {
-      return CreateSrsCardResult.AlreadyExists(existing)
-    }
+    val rawSenseId = selectedSense?.sourceSenseId?.ifBlank { selectedSense.id } ?: "sense-1"
+    val senseId = rawSenseId.trim().lowercase().ifBlank { "sense-1" }
+    val lemma = entry.lemma.ifBlank { entry.normalizedTerm }.trim().lowercase().ifBlank { "unknown" }
+    val pos = entry.partOfSpeech.trim().lowercase().ifBlank { "word" }
+    val contentId = SrsScheduler.buildWordContentId(lemma, pos, senseId)
 
     val meaningFa = selectedSense?.meaningFa?.ifBlank { entry.persianMeaning } ?: entry.persianMeaning
     val definitionEn = selectedSense?.definitionEn?.ifBlank { entry.englishDefinition } ?: entry.englishDefinition
@@ -51,7 +50,7 @@ class CreateSrsCardUseCase(
         backPersianMeaning = meaningFa,
         englishDefinition = definitionEn,
         normalizedLemma = lemma,
-        pos = entry.partOfSpeech,
+        pos = pos,
         senseId = senseId,
         phonetic = entry.pronunciation.primary() ?: entry.phonetic,
         exampleSentence = exampleEn,
@@ -69,8 +68,10 @@ class CreateSrsCardUseCase(
         lastReviewedAtEpochMs = null,
         createdAtEpochMs = nowEpochMs,
       )
-    learningRepository.upsertSrsCard(card)
-    return CreateSrsCardResult.Created(card)
+    return when (val outcome = learningRepository.insertSrsCardIfAbsent(card)) {
+      is SrsCardInsertOutcome.Inserted -> CreateSrsCardResult.Created(outcome.card)
+      is SrsCardInsertOutcome.AlreadyExists -> CreateSrsCardResult.AlreadyExists(outcome.existingCard)
+    }
   }
 
   suspend fun createSentenceCard(
@@ -84,10 +85,6 @@ class CreateSrsCardUseCase(
         sourceSentenceId = sentence.sourceSentenceId,
         englishText = sentence.englishText,
       )
-    val existing = learningRepository.getSrsCardByContentId(contentId)
-    if (existing != null) {
-      return CreateSrsCardResult.AlreadyExists(existing)
-    }
 
     val card =
       SrsCard(
@@ -99,7 +96,7 @@ class CreateSrsCardUseCase(
         englishDefinition = sentence.grammarNoteFa,
         normalizedLemma = sentence.englishText.trim().lowercase(),
         pos = "sentence",
-        senseId = sentence.sourceSentenceId,
+        senseId = sentence.sourceSentenceId.trim().lowercase().ifBlank { "sentence-1" },
         phonetic = sentence.phoneticHint,
         exampleSentence = sentence.englishText,
         contextSentenceEn = sentence.englishText,
@@ -116,8 +113,10 @@ class CreateSrsCardUseCase(
         lastReviewedAtEpochMs = null,
         createdAtEpochMs = nowEpochMs,
       )
-    learningRepository.upsertSrsCard(card)
-    return CreateSrsCardResult.Created(card)
+    return when (val outcome = learningRepository.insertSrsCardIfAbsent(card)) {
+      is SrsCardInsertOutcome.Inserted -> CreateSrsCardResult.Created(outcome.card)
+      is SrsCardInsertOutcome.AlreadyExists -> CreateSrsCardResult.AlreadyExists(outcome.existingCard)
+    }
   }
 
   suspend fun createManualWordAndCard(
@@ -135,12 +134,12 @@ class CreateSrsCardUseCase(
     if (cleanTerm.isEmpty() || cleanMeaning.isEmpty()) return null
 
     val normalized = MorphologyAnalyzer.normalizeToken(cleanTerm)
-    val lemma = MorphologyAnalyzer.resolveLemmas(normalized).firstOrNull()?.lemma ?: normalized
+    val lemma = (MorphologyAnalyzer.resolveLemmas(normalized).firstOrNull()?.lemma ?: normalized).trim().lowercase()
     val cleanPos = pos.trim().lowercase().ifBlank { "word" }
 
     learningRepository.saveVocabularyItem(
       UserVocabularyItem(
-        vocabId = "vocab_${normalized.hashCode()}",
+        vocabId = StableIdGenerator.buildUserVocabId(normalized),
         normalizedTerm = normalized,
         displayTerm = cleanTerm,
         persianMeaning = cleanMeaning,
@@ -155,10 +154,6 @@ class CreateSrsCardUseCase(
     if (!addToSrs) return null
 
     val contentId = SrsScheduler.buildWordContentId(lemma, cleanPos, "manual-1")
-    val existing = learningRepository.getSrsCardByContentId(contentId)
-    if (existing != null) {
-      return CreateSrsCardResult.AlreadyExists(existing)
-    }
 
     val card =
       SrsCard(
@@ -187,8 +182,10 @@ class CreateSrsCardUseCase(
         lastReviewedAtEpochMs = null,
         createdAtEpochMs = nowEpochMs,
       )
-    learningRepository.upsertSrsCard(card)
-    return CreateSrsCardResult.Created(card)
+    return when (val outcome = learningRepository.insertSrsCardIfAbsent(card)) {
+      is SrsCardInsertOutcome.Inserted -> CreateSrsCardResult.Created(outcome.card)
+      is SrsCardInsertOutcome.AlreadyExists -> CreateSrsCardResult.AlreadyExists(outcome.existingCard)
+    }
   }
 }
 

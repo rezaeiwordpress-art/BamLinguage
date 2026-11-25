@@ -524,7 +524,11 @@ class Phase2DomainAndDbRobolectricTest {
 
     val migratedDb =
       Room.databaseBuilder(context, BamLinguageDatabase::class.java, dbFile.absolutePath)
-        .addMigrations(BamLinguageDatabase.MIGRATION_1_2)
+        .addMigrations(
+          BamLinguageDatabase.MIGRATION_1_2,
+          BamLinguageDatabase.MIGRATION_2_3,
+          BamLinguageDatabase.MIGRATION_3_4,
+        )
         .allowMainThreadQueries()
         .build()
     try {

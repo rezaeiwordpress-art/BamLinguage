@@ -23,6 +23,7 @@ import com.example.domain.usecase.CreateSrsCardUseCase
 import com.example.domain.usecase.DictionaryLookupUseCase
 import com.example.domain.usecase.EnsureBundledSamplePackageUseCase
 import com.example.domain.usecase.ImportContentPackageUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -79,6 +80,7 @@ class LearnViewModel(
   private val pendingImportPreview = MutableStateFlow<PackageImportPreview?>(null)
   private val pendingDeletePackage = MutableStateFlow<ContentPackageSummary?>(null)
   private val importFeedback = MutableStateFlow<Pair<String, Boolean>?>(null)
+  private var dictionarySearchJob: Job? = null
 
   private val filterStateFlow =
     combine(selectedLevel, selectedType, selectedTopic, packageSearchQuery) {
@@ -189,16 +191,18 @@ class LearnViewModel(
 
   fun onDictionaryQueryChanged(query: String) {
     dictionaryQuery.value = query
-    viewModelScope.launch {
-      if (query.trim().isEmpty()) {
-        dictionaryResults.value = emptyList()
-        savedVocabularyMatches.value = emptyList()
-      } else {
+    dictionarySearchJob?.cancel()
+    if (query.trim().isEmpty()) {
+      dictionaryResults.value = emptyList()
+      savedVocabularyMatches.value = emptyList()
+      return
+    }
+    dictionarySearchJob =
+      viewModelScope.launch {
         val result = dictionaryLookupUseCase(query)
         dictionaryResults.value = result.glossaryMatches
         savedVocabularyMatches.value = result.savedVocabularyMatches
       }
-    }
   }
 
   fun speakWord(word: String) {

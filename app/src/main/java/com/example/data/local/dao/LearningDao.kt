@@ -5,7 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.example.data.local.entity.LearningProgressEntity
+import com.example.data.local.entity.QuizAttemptEntity
 import com.example.data.local.entity.ReaderBookmarkEntity
 import com.example.data.local.entity.SrsCardEntity
 import com.example.data.local.entity.SrsReviewLogEntity
@@ -80,23 +82,62 @@ interface LearningDao {
   @Query("SELECT * FROM learning_progress WHERE packageId = :packageId LIMIT 1")
   fun observeProgressForPackage(packageId: String): Flow<LearningProgressEntity?>
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun upsertSrsCard(card: SrsCardEntity)
+  @Query("SELECT * FROM quiz_attempts WHERE packageId = :packageId ORDER BY answeredAtEpochMs ASC")
+  fun observeQuizAttemptsForPackage(packageId: String): Flow<List<QuizAttemptEntity>>
+
+  @Query("SELECT * FROM quiz_attempts ORDER BY answeredAtEpochMs DESC")
+  fun observeAllQuizAttempts(): Flow<List<QuizAttemptEntity>>
+
+  @Query("SELECT * FROM quiz_attempts WHERE packageId = :packageId AND questionId = :questionId LIMIT 1")
+  suspend fun getQuizAttempt(packageId: String, questionId: String): QuizAttemptEntity?
+
+  @Update
+  suspend fun updateSrsCard(card: SrsCardEntity): Int
+
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertSrsCardIfAbsent(card: SrsCardEntity): Long
+
+  @Transaction
+  suspend fun upsertSrsCard(card: SrsCardEntity) {
+    val updatedRows = updateSrsCard(card)
+    if (updatedRows == 0) {
+      insertSrsCardIfAbsent(card)
+    }
+  }
 
   @Insert(onConflict = OnConflictStrategy.ABORT)
   suspend fun insertReviewLog(log: SrsReviewLogEntity)
 
   @Transaction
   suspend fun recordSrsReview(updatedCard: SrsCardEntity, log: SrsReviewLogEntity) {
-    upsertSrsCard(updatedCard)
+    val updatedRows = updateSrsCard(updatedCard)
+    if (updatedRows == 0) {
+      insertSrsCardIfAbsent(updatedCard)
+    }
     insertReviewLog(log)
   }
 
   @Query("DELETE FROM srs_cards WHERE cardId = :cardId")
   suspend fun deleteSrsCardById(cardId: String)
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun upsertUserVocabulary(item: UserVocabularyEntity)
+  @Query("SELECT * FROM user_vocabulary WHERE normalizedTerm = :normalizedTerm LIMIT 1")
+  suspend fun getUserVocabularyByNormalizedTerm(normalizedTerm: String): UserVocabularyEntity?
+
+  @Update
+  suspend fun updateUserVocabulary(item: UserVocabularyEntity): Int
+
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertUserVocabularyIfAbsent(item: UserVocabularyEntity): Long
+
+  @Transaction
+  suspend fun upsertUserVocabulary(item: UserVocabularyEntity) {
+    val existing = getUserVocabularyByNormalizedTerm(item.normalizedTerm)
+    if (existing != null) {
+      updateUserVocabulary(item.copy(vocabId = existing.vocabId))
+    } else {
+      insertUserVocabularyIfAbsent(item)
+    }
+  }
 
   @Query("DELETE FROM user_vocabulary WHERE vocabId = :vocabId")
   suspend fun deleteUserVocabularyById(vocabId: String)
@@ -107,8 +148,62 @@ interface LearningDao {
   @Query("DELETE FROM reader_bookmarks WHERE packageId = :packageId AND sentenceId = :sentenceId")
   suspend fun deleteBookmark(packageId: String, sentenceId: String)
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun upsertLearningProgress(progress: LearningProgressEntity)
+  @Update
+  suspend fun updateLearningProgress(progress: LearningProgressEntity): Int
+
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertLearningProgressIfAbsent(progress: LearningProgressEntity): Long
+
+  @Transaction
+  suspend fun upsertLearningProgress(progress: LearningProgressEntity) {
+    val updatedRows = updateLearningProgress(progress)
+    if (updatedRows == 0) {
+      insertLearningProgressIfAbsent(progress)
+    }
+  }
+
+  @Update
+  suspend fun updateQuizAttempt(attempt: QuizAttemptEntity): Int
+
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertQuizAttemptIfAbsent(attempt: QuizAttemptEntity): Long
+
+  @Transaction
+  suspend fun saveQuizAttempt(
+    attemptId: String,
+    packageId: String,
+    questionId: String,
+    selectedOptionIndex: Int,
+    isCorrect: Boolean,
+    answeredAtEpochMs: Long,
+  ) {
+    val existing = getQuizAttempt(packageId, questionId)
+    if (existing != null) {
+      updateQuizAttempt(
+        existing.copy(
+          selectedOptionIndex = selectedOptionIndex,
+          isCorrect = isCorrect,
+          attemptCount = existing.attemptCount + 1,
+          answeredAtEpochMs = answeredAtEpochMs,
+        )
+      )
+    } else {
+      insertQuizAttemptIfAbsent(
+        QuizAttemptEntity(
+          attemptId = attemptId,
+          packageId = packageId,
+          questionId = questionId,
+          selectedOptionIndex = selectedOptionIndex,
+          isCorrect = isCorrect,
+          attemptCount = 1,
+          answeredAtEpochMs = answeredAtEpochMs,
+        )
+      )
+    }
+  }
+
+  @Query("DELETE FROM quiz_attempts")
+  suspend fun deleteAllQuizAttempts()
 
   @Query("DELETE FROM learning_progress")
   suspend fun deleteAllLearningProgress()
@@ -126,6 +221,7 @@ interface LearningDao {
   suspend fun resetReadingProgressAndBookmarks() {
     deleteAllLearningProgress()
     deleteAllBookmarks()
+    deleteAllQuizAttempts()
   }
 
   @Transaction
@@ -133,6 +229,7 @@ interface LearningDao {
     deleteAllSrsCards()
     deleteAllLearningProgress()
     deleteAllBookmarks()
+    deleteAllQuizAttempts()
     deleteAllUserVocabulary()
   }
 }

@@ -97,7 +97,11 @@ fun ReaderScreen(
         val bundle = snapshot.bundle
         val pkg = bundle.contentPackage
         val speakersById = bundle.speakers.associateBy { it.id }
-        val completedCount = snapshot.progress?.completedSentenceCount ?: 0
+        val validSentenceIds = bundle.sentences.map { it.id }.toSet()
+        val completedSentenceIds = snapshot.progress?.completedSentenceIds.orEmpty().intersect(validSentenceIds)
+        val completedCount =
+          if (completedSentenceIds.isNotEmpty() || snapshot.progress == null) completedSentenceIds.size
+          else snapshot.progress.completedSentenceCount.coerceAtMost(bundle.sentences.size)
         val totalSentences = bundle.sentences.size.coerceAtLeast(1)
         val completionFraction = (completedCount.toFloat() / totalSentences.toFloat()).coerceIn(0f, 1f)
 
@@ -225,13 +229,13 @@ fun ReaderScreen(
 
           items(
             items = bundle.sentences,
-            key = { it.id },
+            key = { "sentence_${it.id}" },
           ) { sentence ->
             val speaker = sentence.speakerId?.let { speakersById[it] }
             val isSpeakingThis =
               (uiState.ttsStatus as? TtsStatus.Speaking)?.activeItemId == sentence.id
             val isBookmarked = snapshot.bookmarksBySentenceId.containsKey(sentence.id)
-            val isRead = (snapshot.progress?.completedSentenceCount ?: 0) > sentence.orderIndex
+            val isRead = sentence.id in completedSentenceIds
             val hasSentenceCard = snapshot.sentenceSrsCardsBySentenceId.containsKey(sentence.id)
 
             ReaderSentenceCard(
@@ -263,7 +267,7 @@ fun ReaderScreen(
             }
             items(
               items = bundle.questions,
-              key = { it.id },
+              key = { "question_${it.id}" },
             ) { question ->
               ComprehensionQuestionCard(
                 question = question,

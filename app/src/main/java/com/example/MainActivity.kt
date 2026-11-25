@@ -1,5 +1,9 @@
 package com.example
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,14 +27,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -80,6 +90,40 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BamLinguageApp(container: AppContainer) {
+  val lifecycleOwner = LocalLifecycleOwner.current
+  val appContext = LocalContext.current.applicationContext
+
+  DisposableEffect(lifecycleOwner, container) {
+    val observer = LifecycleEventObserver { _, event ->
+      if (event == Lifecycle.Event.ON_RESUME) {
+        container.timeRefreshSource.notifyForegrounded()
+      }
+    }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose {
+      lifecycleOwner.lifecycle.removeObserver(observer)
+    }
+  }
+
+  DisposableEffect(appContext, container) {
+    val timeReceiver =
+      object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+          container.timeRefreshSource.notifyTimeChanged()
+        }
+      }
+    val filter =
+      IntentFilter().apply {
+        addAction(Intent.ACTION_TIME_CHANGED)
+        addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        addAction(Intent.ACTION_DATE_CHANGED)
+      }
+    ContextCompat.registerReceiver(appContext, timeReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+    onDispose {
+      runCatching { appContext.unregisterReceiver(timeReceiver) }
+    }
+  }
+
   val prefs by
     container.preferencesRepository.userPreferences.collectAsStateWithLifecycle(
       initialValue = UserPreferences(),
@@ -199,6 +243,7 @@ fun BamLinguageApp(container: AppContainer) {
                         ensureBundledSamplePackageUseCase = container.ensureBundledSamplePackageUseCase,
                         createSrsCardUseCase = container.createSrsCardUseCase,
                         ttsEngine = container.ttsEngine,
+                        timeRefreshSource = container.timeRefreshSource,
                       ),
                   )
                 HomeScreen(
@@ -247,6 +292,7 @@ fun BamLinguageApp(container: AppContainer) {
                         preferencesRepository = container.preferencesRepository,
                         ttsEngine = container.ttsEngine,
                         aiService = container.aiService,
+                        timeRefreshSource = container.timeRefreshSource,
                       ),
                   )
                 ReaderScreen(
@@ -266,6 +312,7 @@ fun BamLinguageApp(container: AppContainer) {
                         srsScheduler = container.srsScheduler,
                         reviewSrsCardUseCase = container.reviewSrsCardUseCase,
                         deleteSrsCardUseCase = container.deleteSrsCardUseCase,
+                        timeRefreshSource = container.timeRefreshSource,
                       ),
                   )
                 PracticeScreen(viewModel = vm)
@@ -278,6 +325,7 @@ fun BamLinguageApp(container: AppContainer) {
                       ProgressViewModel.Factory(
                         contentRepository = container.contentRepository,
                         learningRepository = container.learningRepository,
+                        timeRefreshSource = container.timeRefreshSource,
                       ),
                   )
                 ProgressScreen(

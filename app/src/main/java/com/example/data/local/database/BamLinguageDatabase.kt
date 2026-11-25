@@ -14,6 +14,7 @@ import com.example.data.local.entity.GlossaryEntryEntity
 import com.example.data.local.entity.GlossarySenseEntity
 import com.example.data.local.entity.LearningProgressEntity
 import com.example.data.local.entity.QuestionEntity
+import com.example.data.local.entity.QuizAttemptEntity
 import com.example.data.local.entity.ReaderBookmarkEntity
 import com.example.data.local.entity.SentenceEntity
 import com.example.data.local.entity.SpeakerEntity
@@ -36,8 +37,9 @@ import com.example.data.local.entity.WordOccurrenceEntity
     LearningProgressEntity::class,
     UserVocabularyEntity::class,
     ReaderBookmarkEntity::class,
+    QuizAttemptEntity::class,
   ],
-  version = 2,
+  version = 4,
   exportSchema = false,
 )
 @TypeConverters(RoomConverters::class)
@@ -103,13 +105,54 @@ abstract class BamLinguageDatabase : RoomDatabase() {
         }
       }
 
+    val MIGRATION_2_3 =
+      object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+          db.execSQL("UPDATE srs_cards SET contentId = cardId WHERE contentId = ''")
+          db.execSQL(
+            """
+            DELETE FROM srs_cards
+            WHERE rowid NOT IN (
+              SELECT MIN(rowid) FROM srs_cards GROUP BY contentId
+            )
+            """.trimIndent()
+          )
+          db.execSQL("DROP INDEX IF EXISTS index_srs_cards_contentId")
+          db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_srs_cards_contentId ON srs_cards (contentId)")
+          db.execSQL("ALTER TABLE learning_progress ADD COLUMN completedSentenceIds TEXT NOT NULL DEFAULT '[]'")
+        }
+      }
+
+    val MIGRATION_3_4 =
+      object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+          db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS quiz_attempts (
+              attemptId TEXT NOT NULL,
+              packageId TEXT NOT NULL,
+              questionId TEXT NOT NULL,
+              selectedOptionIndex INTEGER NOT NULL,
+              isCorrect INTEGER NOT NULL,
+              attemptCount INTEGER NOT NULL DEFAULT 1,
+              answeredAtEpochMs INTEGER NOT NULL,
+              PRIMARY KEY(attemptId)
+            )
+            """.trimIndent()
+          )
+          db.execSQL("CREATE INDEX IF NOT EXISTS index_quiz_attempts_packageId ON quiz_attempts (packageId)")
+          db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_quiz_attempts_packageId_questionId ON quiz_attempts (packageId, questionId)")
+          db.execSQL("CREATE INDEX IF NOT EXISTS index_quiz_attempts_answeredAtEpochMs ON quiz_attempts (answeredAtEpochMs)")
+        }
+      }
+
     fun create(context: Context): BamLinguageDatabase =
       Room.databaseBuilder(
         context.applicationContext,
         BamLinguageDatabase::class.java,
         DATABASE_NAME,
       )
-        .addMigrations(MIGRATION_1_2)
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
         .build()
 
     fun createInMemory(context: Context): BamLinguageDatabase =
@@ -117,7 +160,7 @@ abstract class BamLinguageDatabase : RoomDatabase() {
         context.applicationContext,
         BamLinguageDatabase::class.java,
       )
-        .addMigrations(MIGRATION_1_2)
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
         .allowMainThreadQueries()
         .build()
   }

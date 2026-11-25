@@ -83,6 +83,9 @@ interface ContentDao {
   @Query("SELECT * FROM glossary_senses ORDER BY orderIndex ASC")
   suspend fun getAllGlossarySenses(): List<GlossarySenseEntity>
 
+  @Query("SELECT * FROM glossary_senses WHERE glossaryEntryId IN (:entryIds) ORDER BY orderIndex ASC")
+  suspend fun getSensesForEntryIds(entryIds: List<String>): List<GlossarySenseEntity>
+
   @Query("SELECT * FROM word_occurrences WHERE packageId = :packageId")
   suspend fun getWordOccurrencesForPackage(packageId: String): List<WordOccurrenceEntity>
 

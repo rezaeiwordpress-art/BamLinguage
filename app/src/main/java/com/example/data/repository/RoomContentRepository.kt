@@ -120,8 +120,15 @@ class RoomContentRepository(
 
   override suspend fun searchGlossary(query: String): List<GlossaryEntry> =
     withContext(dispatchers.io) {
-      val sensesByEntry = contentDao.getAllGlossarySenses().groupBy { it.glossaryEntryId }
-      contentDao.searchGlossary(query.trim().lowercase()).map { entry ->
+      val entries = contentDao.searchGlossary(query.trim().lowercase())
+      if (entries.isEmpty()) return@withContext emptyList()
+      val sensesByEntry =
+        entries
+          .map { it.id }
+          .chunked(500)
+          .flatMap { chunk -> contentDao.getSensesForEntryIds(chunk) }
+          .groupBy { it.glossaryEntryId }
+      entries.map { entry ->
         entry.toDomain(sensesByEntry[entry.id].orEmpty().map { it.toDomain() })
       }
     }

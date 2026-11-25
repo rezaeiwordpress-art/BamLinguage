@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
     Index(value = ["state"]),
     Index(value = ["sourcePackageId"]),
     Index(value = ["frontTerm"]),
-    Index(value = ["contentId"]),
+    Index(value = ["contentId"], unique = true),
     Index(value = ["cardType"]),
   ],
 )
@@ -91,6 +91,7 @@ data class LearningProgressEntity(
   val totalQuestionsCount: Int,
   val lastReadSentenceIndex: Int,
   val updatedAtEpochMs: Long,
+  val completedSentenceIds: List<String> = emptyList(),
 )
 
 @Entity(
@@ -127,4 +128,22 @@ data class ReaderBookmarkEntity(
   val sentenceOrderIndex: Int,
   val noteFa: String?,
   val createdAtEpochMs: Long,
+)
+
+@Entity(
+  tableName = "quiz_attempts",
+  indices = [
+    Index(value = ["packageId"]),
+    Index(value = ["packageId", "questionId"], unique = true),
+    Index(value = ["answeredAtEpochMs"]),
+  ],
+)
+data class QuizAttemptEntity(
+  @PrimaryKey val attemptId: String,
+  val packageId: String,
+  val questionId: String,
+  val selectedOptionIndex: Int,
+  val isCorrect: Boolean,
+  val attemptCount: Int = 1,
+  val answeredAtEpochMs: Long,
 )
